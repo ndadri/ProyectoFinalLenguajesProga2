@@ -27,7 +27,8 @@
         <th>ID</th>
         <th>Nombre</th>
         <th>Apellido</th>
-        <th>Cédula</th>
+        <th>Telefono</th>
+        <th>Email</th>
     </tr>
     </thead>
 

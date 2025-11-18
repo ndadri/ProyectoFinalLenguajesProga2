@@ -21,7 +21,8 @@ public class PacienteDAO {
                         rs.getInt("id"),
                         rs.getString("nombre"),
                         rs.getString("apellido"),
-                        rs.getString("cedula")
+                        rs.getString("telefono"),
+                        rs.getString("email")
                 ));
             }
 
@@ -33,14 +34,15 @@ public class PacienteDAO {
     }
 
     public void guardar(Paciente p) {
-        String sql = "INSERT INTO pacientes(nombre, apellido, cedula) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO pacientes(nombre, apellido, telefono, email) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = ConexionBdd.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, p.getNombre());
             ps.setString(2, p.getApellido());
-            ps.setString(3, p.getCedula());
+            ps.setString(3, p.getTelefono());
+            ps.setString(4, p.getEmail());
             ps.executeUpdate();
 
         } catch (Exception e) {

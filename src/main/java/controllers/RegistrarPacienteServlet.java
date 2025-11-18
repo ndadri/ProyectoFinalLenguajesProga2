@@ -26,8 +26,8 @@ public class RegistrarPacienteServlet extends HttpServlet {
         Paciente p = new Paciente();
         p.setNombre(req.getParameter("nombre"));
         p.setApellido(req.getParameter("apellido"));
-        p.setCedula(req.getParameter("cedula"));
-
+        p.setTelefono(req.getParameter("telefono"));
+        p.setEmail(req.getParameter("email"));
         dao.guardar(p);
 
         resp.sendRedirect("pacientes");
