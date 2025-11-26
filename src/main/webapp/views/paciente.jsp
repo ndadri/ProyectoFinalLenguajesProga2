@@ -2,8 +2,7 @@
   Created by IntelliJ IDEA.
   User: adria
   Date: 17/nov/2025
-  Time: 09:02 p. m.
-  To change this template use File | Settings | File Templates.
+  Time: 09:02 p. m.
 --%>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
@@ -25,18 +24,31 @@
     <thead>
     <tr>
         <th>ID</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Telefono</th>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Teléfono</th>
         <th>Email</th>
     </tr>
     </thead>
 
     <tbody>
-    <!-- Aquí el servlet imprimirá los pacientes -->
+    <%
+        if (pacientes != null) {
+            for (Paciente paciente : pacientes) {
+    %>
+    <tr>
+        <td><%= paciente.getId() %></td>
+        <td><%= paciente.getNombres() %></td>
+        <td><%= paciente.getApellidos() %></td>
+        <td><%= paciente.getTelefono() %></td>
+        <td><%= paciente.getEmail() %></td>
+    </tr>
+    <%
+            }
+        }
+    %>
     </tbody>
 </table>
 
 </body>
 </html>
-

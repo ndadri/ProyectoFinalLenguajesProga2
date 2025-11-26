@@ -2,8 +2,7 @@
   Created by IntelliJ IDEA.
   User: adria
   Date: 17/nov/2025
-  Time: 09:42 p. m.
-  To change this template use File | Settings | File Templates.
+  Time: 09:42 p. m.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -20,8 +19,11 @@
     <label>ID Paciente:</label><br>
     <input type="number" name="paciente_id" required><br><br>
 
-    <label>Fecha:</label><br>
-    <input type="date" name="fecha" required><br><br>
+    <label>ID Médico:</label><br>
+    <input type="number" name="medico_id" required><br><br>
+
+    <label>Fecha y Hora:</label><br>
+    <input type="datetime-local" name="fecha_hora" required><br><br>
 
     <label>Motivo:</label><br>
     <textarea name="motivo" required></textarea><br><br>
@@ -31,4 +33,3 @@
 
 </body>
 </html>
-

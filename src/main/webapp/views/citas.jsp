@@ -2,10 +2,14 @@
   Created by IntelliJ IDEA.
   User: adria
   Date: 17/nov/2025
-  Time: 09:02 p. m.
-  To change this template use File | Settings | File Templates.
+  Time: 09:02 p. m.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="models.Cita" %>
+<%
+    List<Cita> listaCitas = (List<Cita>) request.getAttribute("listaCitas");
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -19,18 +23,34 @@
 <table border="1">
     <thead>
     <tr>
-        <th>ID</th>
+        <th>ID Cita</th>
         <th>ID Paciente</th>
-        <th>Fecha</th>
+        <th>ID Médico</th>
+        <th>Fecha y Hora</th>
         <th>Motivo</th>
+        <th>Estado</th>
     </tr>
     </thead>
 
     <tbody>
-    <!-- Citas renderizadas por el servlet -->
+    <%
+        if (listaCitas != null) {
+            for (Cita cita : listaCitas) {
+    %>
+    <tr>
+        <td><%= cita.getId() %></td>
+        <td><%= cita.getPacienteId() %></td>
+        <td><%= cita.getMedicoId() %></td>
+        <td><%= cita.getFechaHora() %></td>
+        <td><%= cita.getMotivo() %></td>
+        <td><%= cita.getEstado() %></td>
+    </tr>
+    <%
+            }
+        }
+    %>
     </tbody>
 </table>
 
 </body>
 </html>
-
