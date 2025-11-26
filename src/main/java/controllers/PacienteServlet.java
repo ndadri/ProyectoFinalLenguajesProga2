@@ -16,7 +16,7 @@ public class PacienteServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        req.setAttribute("pacientes", dao.listar());
+        req.setAttribute("listaPacientes", dao.listar());
         req.getRequestDispatcher("views/paciente.jsp").forward(req, resp);
     }
 }

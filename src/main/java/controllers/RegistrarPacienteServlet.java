@@ -24,12 +24,10 @@ public class RegistrarPacienteServlet extends HttpServlet {
             throws ServletException, IOException {
 
         Paciente p = new Paciente();
-        // CORREGIDO: Solo se reciben los 4 parámetros del formulario
-        p.setNombres(req.getParameter("nombres"));
-        p.setApellidos(req.getParameter("apellidos"));
+        p.setNombre(req.getParameter("nombre"));
+        p.setApellido(req.getParameter("apellido"));
         p.setTelefono(req.getParameter("telefono"));
         p.setEmail(req.getParameter("email"));
-
         dao.guardar(p);
 
         resp.sendRedirect("pacientes");

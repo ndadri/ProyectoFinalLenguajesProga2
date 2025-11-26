@@ -26,10 +26,8 @@ public class RegistrarCitaServlet extends HttpServlet {
 
         Cita c = new Cita();
         c.setPacienteId(Integer.parseInt(req.getParameter("paciente_id")));
-        c.setMedicoId(Integer.parseInt(req.getParameter("medico_id"))); // Agregado
-        c.setFechaHora(req.getParameter("fecha_hora")); // Corregido
+        c.setFecha(req.getParameter("fecha"));
         c.setMotivo(req.getParameter("motivo"));
-        c.setEstado("Pendiente"); // Valor por defecto
 
         dao.guardar(c);
 
