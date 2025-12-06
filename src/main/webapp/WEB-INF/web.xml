@@ -1,10 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+         https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
+
+    <display-name>Clinica Odontologica DentalCare</display-name>
+
+    <!-- Página de bienvenida -->
     <welcome-file-list>
-        <welcome-file>views/index.html</welcome-file>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>login</welcome-file>
     </welcome-file-list>
+
+    <!-- Configuración de sesión -->
+    <session-config>
+        <session-timeout>60</session-timeout>
+    </session-config>
+
+    <!-- Filtro de autenticación -->
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>filters.AuthFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>/dashboard</url-pattern>
+        <url-pattern>/paciente</url-pattern>
+        <url-pattern>/cita</url-pattern>
+        <url-pattern>/consulta</url-pattern>
+        <url-pattern>/odontologo</url-pattern>
+        <url-pattern>/tratamiento</url-pattern>
+        <url-pattern>/factura</url-pattern>
+    </filter-mapping>
+
+    <!-- Páginas de error -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/views/error/404.jsp</location>
+    </error-page>
+
+    <error-page>
+        <error-code>500</error-code>
+        <location>/views/error/500.jsp</location>
+    </error-page>
 
 </web-app>

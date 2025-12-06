@@ -5,30 +5,42 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConexionBdd {
+    private static final String URL = "jdbc:mysql://localhost:3306/clinica_odontologica?useSSL=false&serverTimezone=UTC";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
 
-    private static String url = "jdbc:mysql://localhost:3306/sistema_medico?serverTimezone=UTC";
-    private static String username = "root";
-    private static String password = "";
-
+    // Cargar el driver al iniciar la clase
     static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Error: No se encontró el driver MySQL", e);
+            throw new RuntimeException("Error al cargar el driver de MySQL", e);
         }
     }
 
+    // Obtener conexión
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, username, password);
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    public static void main(String[] args) {
-        try (Connection conn = ConexionBdd.getConnection()) {
-            if (conn != null) {
-                System.out.println("Conexión exitosa a la base de datos");
+    // Cerrar conexión
+    public static void closeConnection(Connection conn) {
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
+        }
+    }
+
+    // Método para probar la conexión
+    public static boolean probarConexion() {
+        try (Connection conn = getConnection()) {
+            return conn != null && !conn.isClosed();
         } catch (SQLException e) {
-            System.out.println("Error al conectarse a la bdd: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
     }
 }
