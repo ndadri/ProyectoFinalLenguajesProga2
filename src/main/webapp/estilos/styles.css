@@ -452,6 +452,11 @@ body {
     color: #991B1B;
 }
 
+.badge-info {
+    background: #DBEAFE;
+    color: #1E40AF;
+}
+
 /* ===================================
    EMPTY STATE
    =================================== */

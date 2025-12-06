@@ -1,6 +1,8 @@
 package models;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Cita {
     private int citaId;
@@ -19,6 +21,8 @@ public class Cita {
     // Campos adicionales para mostrar
     private String pacienteNombre;
     private String odontologoNombre;
+    private String pacienteTelefono;
+    private String pacienteCedula;
 
     // Constructores
     public Cita() {
@@ -144,5 +148,59 @@ public class Cita {
 
     public void setOdontologoNombre(String odontologoNombre) {
         this.odontologoNombre = odontologoNombre;
+    }
+
+    public String getPacienteTelefono() {
+        return pacienteTelefono;
+    }
+
+    public void setPacienteTelefono(String pacienteTelefono) {
+        this.pacienteTelefono = pacienteTelefono;
+    }
+
+    public String getPacienteCedula() {
+        return pacienteCedula;
+    }
+
+    public void setPacienteCedula(String pacienteCedula) {
+        this.pacienteCedula = pacienteCedula;
+    }
+
+    // Métodos auxiliares
+    public String getFechaFormateada() {
+        if (fechaHora != null) {
+            LocalDateTime ldt = fechaHora.toLocalDateTime();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return ldt.format(formatter);
+        }
+        return "";
+    }
+
+    public String getHoraFormateada() {
+        if (fechaHora != null) {
+            LocalDateTime ldt = fechaHora.toLocalDateTime();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            return ldt.format(formatter);
+        }
+        return "";
+    }
+
+    public String getEstadoColor() {
+        switch (estado) {
+            case "Confirmada":
+                return "success";
+            case "Programada":
+                return "info";
+            case "En_Curso":
+                return "warning";
+            case "Completada":
+                return "success";
+            case "Cancelada":
+                return "error";
+            case "No_Asistio":
+                return "error";
+            default:
+                return "info";
+        }
     }
 }
