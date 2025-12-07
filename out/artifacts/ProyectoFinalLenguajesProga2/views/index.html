@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentalCare - Sistema de Gestión Odontológica</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            margin: 0 auto 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 20px;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature i {
+            font-size: 32px;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            font-size: 18px;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature p {
+            font-size: 14px;
+            opacity: 0.8;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="logo">
+        <i class="fas fa-tooth"></i>
+    </div>
+
+    <h1>DentalCare</h1>
+    <p>Sistema integral de gestión para clínicas odontológicas. Administra pacientes, citas, tratamientos y más de forma eficiente.</p>
+
+    <div class="btn-group">
+        <a href="login" class="btn btn-primary">
+            <i class="fas fa-sign-in-alt"></i>
+            Iniciar Sesión
+        </a>
+        <a href="#features" class="btn btn-outline">
+            <i class="fas fa-info-circle"></i>
+            Más Información
+        </a>
+    </div>
+
+    <div class="features" id="features">
+        <div class="feature">
+            <i class="fas fa-users"></i>
+            <h3>Gestión de Pacientes</h3>
+            <p>Administra la información completa de tus pacientes</p>
+        </div>
+
+        <div class="feature">
+            <i class="fas fa-calendar-alt"></i>
+            <h3>Agenda de Citas</h3>
+            <p>Organiza y controla todas las citas de tu clínica</p>
+        </div>
+
+        <div class="feature">
+            <i class="fas fa-stethoscope"></i>
+            <h3>Historial Clínico</h3>
+            <p>Registra consultas y tratamientos detallados</p>
+        </div>
+
+        <div class="feature">
+            <i class="fas fa-chart-line"></i>
+            <h3>Reportes</h3>
+            <p>Genera estadísticas y reportes completos</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto redirect a login después de 3 segundos
+    setTimeout(() => {
+        window.location.href = 'login';
+    }, 5000);
+</script>
+</body>
+</html>
