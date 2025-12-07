@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: adria
-  Date: 06/dic/2025
-  Time: 11:19 a. m.
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.*" %>
 <%@ page import="java.util.List" %>
@@ -16,10 +9,64 @@
     <title><%= request.getAttribute("factura") == null ? "Nueva Factura" : "Editar Factura" %> - DentalCare</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .detalle-row {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1.5fr 1.5fr 80px;
+            gap: 15px;
+            align-items: start;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #F9FAFB;
+            border-radius: 8px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .totales-section {
+            background: #F3F4F6;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .total-row:last-child {
+            border-bottom: none;
+            font-size: 1.2rem;
+            color: #1F2937;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 2px solid #D1D5DB;
+        }
+
+        .btn-remove {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            border: none;
+            background: #FEE2E2;
+            color: #DC2626;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 24px;
+        }
+
+        .btn-remove:hover {
+            background: #FECACA;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-        <%
+    <%
         Factura factura = (Factura) request.getAttribute("factura");
         List<Paciente> pacientes = (List<Paciente>) request.getAttribute("pacientes");
         List<TratamientoOdontologico> tratamientos = (List<TratamientoOdontologico>) request.getAttribute("tratamientos");
@@ -47,9 +94,9 @@
         <div class="card-body">
             <form action="factura" method="post" id="facturaForm">
                 <input type="hidden" name="action" value="<%= esEdicion ? "actualizar" : "guardar" %>">
-                    <% if (esEdicion) { %>
+                <% if (esEdicion) { %>
                 <input type="hidden" name="factura_id" value="<%= factura.getFacturaId() %>">
-                    <% } %>
+                <% } %>
 
                 <h3 style="margin-bottom: 1rem; color: #374151;">
                     <i class="fas fa-info-circle"></i> Información Básica
@@ -68,12 +115,13 @@
                         <select id="paciente_id" name="paciente_id" class="form-control" required
                                 <%= esEdicion ? "disabled" : "" %>>
                             <option value="">Seleccione un paciente</option>
-                            <% for (Paciente p : pacientes) { %>
+                            <% if (pacientes != null) {
+                                for (Paciente p : pacientes) { %>
                             <option value="<%= p.getPacienteId() %>"
                                     <%= esEdicion && p.getPacienteId() == factura.getPacienteId() ? "selected" : "" %>>
                                 <%= p.getNombres() %> <%= p.getApellidos() %> - <%= p.getCedula() %>
                             </option>
-                            <% } %>
+                            <% }} %>
                         </select>
                         <% if (esEdicion) { %>
                         <input type="hidden" name="paciente_id" value="<%= factura.getPacienteId() %>">
@@ -114,53 +162,7 @@
                 </h3>
 
                 <div id="detallesContainer">
-                    <% if (esEdicion && detalles != null && !detalles.isEmpty()) {
-                        for (DetalleFactura d : detalles) {
-                    %>
-                    <div class="detalle-row">
-                        <div class="form-group" style="margin: 0;">
-                            <label>Tratamiento/Descripción</label>
-                            <select class="form-control tratamiento-select" onchange="seleccionarTratamiento(this)">
-                                <option value="">Escribir descripción manual</option>
-                                <% for (TratamientoOdontologico t : tratamientos) { %>
-                                <option value="<%= t.getTratamientoId() %>" data-precio="<%= t.getPrecioBase() %>"
-                                        data-nombre="<%= t.getNombre() %>"
-                                        <%= d.getTratamientoId() != null && d.getTratamientoId() == t.getTratamientoId() ? "selected" : "" %>>
-                                    <%= t.getNombre() %> - <%= t.getPrecioFormateado() %>
-                                </option>
-                                <% } %>
-                            </select>
-                            <input type="hidden" name="tratamiento_id[]" value="<%= d.getTratamientoId() != null ? d.getTratamientoId() : "" %>">
-                            <input type="text" name="descripcion[]" class="form-control descripcion-input"
-                                   value="<%= d.getDescripcion() %>" placeholder="Descripción del tratamiento"
-                                   required style="margin-top: 0.5rem;">
-                        </div>
-                        <div class="form-group" style="margin: 0;">
-                            <label>Cantidad</label>
-                            <input type="number" name="cantidad[]" class="form-control cantidad-input"
-                                   value="<%= d.getCantidad() %>" min="1" required onchange="calcularTotales()">
-                        </div>
-                        <div class="form-group" style="margin: 0;">
-                            <label>Precio Unitario</label>
-                            <input type="number" name="precio_unitario[]" class="form-control precio-input"
-                                   value="<%= d.getPrecioUnitario() %>" step="0.01" min="0" required onchange="calcularTotales()">
-                        </div>
-                        <div class="form-group" style="margin: 0;">
-                            <label>Subtotal</label>
-                            <input type="text" class="form-control subtotal-input"
-                                   value="<%= d.getSubtotalFormateado() %>" readonly>
-                        </div>
-                        <div>
-                            <label style="visibility: hidden;">Acción</label>
-                            <button type="button" class="btn-remove" onclick="eliminarDetalle(this)">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <%
-                            }
-                        }
-                    %>
+                    <!-- Las filas de detalles se agregarán aquí dinámicamente -->
                 </div>
 
                 <button type="button" class="btn btn-secondary" onclick="agregarDetalle()">
@@ -203,3 +205,209 @@
                         <%= esEdicion ? "Actualizar Factura" : "Crear Factura" %>
                     </button>
                     <a href="factura?action=listar" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // TRATAMIENTOS
+    const TRATAMIENTOS = {
+    <%
+    if (tratamientos != null) {
+        for (int i = 0; i < tratamientos.size(); i++) {
+            TratamientoOdontologico t = tratamientos.get(i);
+    %>
+    <%= t.getTratamientoId() %>: {
+        id: <%= t.getTratamientoId() %>,
+        codigo: '<%= t.getCodigo() %>',
+            nombre: '<%= t.getNombre().replace("'", "\\'") %>',
+            precio: <%= t.getPrecioBase() %>
+    }<%= i < tratamientos.size() - 1 ? "," : "" %>
+    <%
+        }
+    }
+    %>
+    };
+
+    console.log('[DEBUG] Tratamientos cargados:', Object.keys(TRATAMIENTOS).length);
+
+    let contadorDetalles = 0;
+
+    function agregarDetalle(tratamientoId, descripcion, cantidad, precioUnitario) {
+        try {
+            console.log('[DEBUG] agregarDetalle() llamado con:', {tratamientoId, descripcion, cantidad, precioUnitario});
+
+            contadorDetalles++;
+
+            const container = document.getElementById('detallesContainer');
+            if (!container) {
+                console.error('[ERROR] No se encontró detallesContainer');
+                return;
+            }
+
+            const div = document.createElement('div');
+            div.className = 'detalle-row';
+            div.id = 'detalle-' + contadorDetalles;
+
+            tratamientoId = tratamientoId || '';
+            descripcion = descripcion || '';
+            cantidad = cantidad || 1;
+            precioUnitario = precioUnitario || 0;
+
+            let optionsHTML = '<option value="">Escribir descripción manual</option>';
+            for (let id in TRATAMIENTOS) {
+                const t = TRATAMIENTOS[id];
+                const selected = (tratamientoId == id) ? 'selected' : '';
+                optionsHTML += '<option value="' + t.id + '" ' + selected + '>' + t.nombre + ' - $' + t.precio.toFixed(2) + '</option>';
+            }
+
+            div.innerHTML =
+                '<div class="form-group" style="margin: 0;">' +
+                '<label>Tratamiento/Descripción</label>' +
+                '<select class="form-control tratamiento-select" onchange="seleccionarTratamiento(this)">' +
+                optionsHTML +
+                '</select>' +
+                '<input type="hidden" name="tratamiento_id[]" class="tratamiento-id-input" value="' + tratamientoId + '">' +
+                '<input type="text" name="descripcion[]" class="form-control descripcion-input" value="' + descripcion + '" placeholder="Descripción del tratamiento" required style="margin-top: 0.5rem;">' +
+                '</div>' +
+                '<div class="form-group" style="margin: 0;">' +
+                '<label>Cantidad</label>' +
+                '<input type="number" name="cantidad[]" class="form-control cantidad-input" value="' + cantidad + '" min="1" required onchange="calcularTotales()">' +
+                '</div>' +
+                '<div class="form-group" style="margin: 0;">' +
+                '<label>Precio Unitario</label>' +
+                '<input type="number" name="precio_unitario[]" class="form-control precio-input" value="' + precioUnitario + '" step="0.01" min="0" required onchange="calcularTotales()">' +
+                '</div>' +
+                '<div class="form-group" style="margin: 0;">' +
+                '<label>Subtotal</label>' +
+                '<input type="text" class="form-control subtotal-input" readonly value="$0.00">' +
+                '</div>' +
+                '<div>' +
+                '<button type="button" class="btn-remove" onclick="eliminarDetalle(this)" title="Eliminar">' +
+                '<i class="fas fa-trash"></i>' +
+                '</button>' +
+                '</div>';
+
+            container.appendChild(div);
+            console.log('[DEBUG] Fila agregada. Total filas:', document.querySelectorAll('.detalle-row').length);
+
+            calcularTotales();
+        } catch(e) {
+            console.error('[ERROR] Error en agregarDetalle():', e);
+        }
+    }
+
+    function eliminarDetalle(btn) {
+        const rows = document.querySelectorAll('.detalle-row');
+        if (rows.length <= 1) {
+            alert('Debe haber al menos un detalle en la factura');
+            return;
+        }
+
+        if (confirm('¿Eliminar esta línea?')) {
+            btn.closest('.detalle-row').remove();
+            calcularTotales();
+        }
+    }
+
+    function seleccionarTratamiento(select) {
+        const tratamientoId = select.value;
+        const row = select.closest('.detalle-row');
+
+        if (tratamientoId && TRATAMIENTOS[tratamientoId]) {
+            const t = TRATAMIENTOS[tratamientoId];
+
+            row.querySelector('.tratamiento-id-input').value = t.id;
+            row.querySelector('.descripcion-input').value = t.nombre;
+            row.querySelector('.precio-input').value = t.precio.toFixed(2);
+
+            console.log('[DEBUG] Tratamiento seleccionado:', t);
+            calcularTotales();
+        } else {
+            row.querySelector('.tratamiento-id-input').value = '';
+        }
+    }
+
+    function calcularTotales() {
+        const rows = document.querySelectorAll('.detalle-row');
+        let subtotalGeneral = 0;
+
+        rows.forEach(row => {
+            const cantidad = parseFloat(row.querySelector('.cantidad-input').value) || 0;
+            const precioUnitario = parseFloat(row.querySelector('.precio-input').value) || 0;
+            const subtotal = cantidad * precioUnitario;
+
+            row.querySelector('.subtotal-input').value = formatCurrency(subtotal);
+            subtotalGeneral += subtotal;
+        });
+
+        const descuento = parseFloat(document.getElementById('descuento').value) || 0;
+        const baseImponible = subtotalGeneral - descuento;
+        const iva = baseImponible * 0.15;
+        const total = baseImponible + iva;
+
+        document.getElementById('subtotal_display').textContent = formatCurrency(subtotalGeneral);
+        document.getElementById('descuento_display').textContent = formatCurrency(descuento);
+        document.getElementById('iva_display').textContent = formatCurrency(iva);
+        document.getElementById('total_display').textContent = formatCurrency(total);
+
+        document.getElementById('subtotal').value = subtotalGeneral.toFixed(2);
+    }
+
+    function formatCurrency(amount) {
+        return '$' + parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    }
+
+    // INICIALIZACIÓN
+    window.addEventListener('load', function() {
+        console.log('[DEBUG] Página cargada, iniciando...');
+
+        <%
+        if (esEdicion && detalles != null && !detalles.isEmpty()) {
+            for (DetalleFactura d : detalles) {
+        %>
+        agregarDetalle(
+            <%= d.getTratamientoId() != null ? d.getTratamientoId() : "null" %>,
+            '<%= d.getDescripcion().replace("'", "\\'") %>',
+            <%= d.getCantidad() %>,
+            <%= d.getPrecioUnitario() %>
+        );
+        <%
+            }
+        } else {
+        %>
+        console.log('[DEBUG] Agregando primera línea vacía...');
+        agregarDetalle();
+        <%
+        }
+        %>
+
+        calcularTotales();
+        console.log('[DEBUG] Inicialización completada');
+    });
+
+    // VALIDACIÓN
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('facturaForm').addEventListener('submit', function(e) {
+            const detalles = document.querySelectorAll('.detalle-row');
+            if (detalles.length === 0) {
+                e.preventDefault();
+                alert('Debe agregar al menos un detalle a la factura');
+                return false;
+            }
+
+            const subtotal = parseFloat(document.getElementById('subtotal').value) || 0;
+            if (subtotal <= 0) {
+                e.preventDefault();
+                alert('El subtotal debe ser mayor a cero');
+                return false;
+            }
+        });
+    });
+</script>
+</body>
+</html>

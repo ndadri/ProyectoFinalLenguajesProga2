@@ -98,4 +98,42 @@ public class TratamientoOdontologico {
     public String getAnestesiaTexto() {
         return requiere_anestesia == 1 ? "Sí" : "No";
     }
+    // ========== MÉTODOS ALIAS PARA COMPATIBILIDAD CON JSP (camelCase) ==========
+
+    public int getTratamientoId() {
+        return tratamiento_id;
+    }
+
+    public void setTratamientoId(int tratamientoId) {
+        this.tratamiento_id = tratamientoId;
+    }
+
+    public BigDecimal getPrecioBase() {
+        return precio_base;
+    }
+
+    public void setPrecioBase(BigDecimal precioBase) {
+        this.precio_base = precioBase;
+    }
+
+    public int getDuracionAproximada() {
+        return duracion_aproximada;
+    }
+
+    public void setDuracionAproximada(int duracionAproximada) {
+        this.duracion_aproximada = duracionAproximada;
+    }
+
+    public int getRequiereAnestesia() {
+        return requiere_anestesia;
+    }
+
+    public void setRequiereAnestesia(int requiereAnestesia) {
+        this.requiere_anestesia = requiereAnestesia;
+    }
+
+    public String getPrecioFormateado() {
+        if (precio_base == null) return "$0.00";
+        return String.format("$%.2f", precio_base);
+    }
 }

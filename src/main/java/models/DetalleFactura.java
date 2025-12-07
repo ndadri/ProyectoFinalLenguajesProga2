@@ -1,61 +1,51 @@
 package models;
 
 import java.math.BigDecimal;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 public class DetalleFactura {
-    private int detalleId;
-    private int facturaId;
-    private Integer tratamientoId;
+
+    private int detalle_id;
+    private int factura_id;
+    private Integer tratamiento_id;
     private String descripcion;
     private int cantidad;
-    private BigDecimal precioUnitario;
+    private BigDecimal precio_unitario;
     private BigDecimal subtotal;
 
-    // Campos adicionales para mostrar
-    private String tratamientoNombre;
-    private String tratamientoCategoria;
+    // Campos adicionales (JOIN)
+    private String tratamiento_nombre;
+    private String tratamiento_categoria;
 
-    // Constructor vacío
+    // Constructor
     public DetalleFactura() {
         this.cantidad = 1;
-        this.precioUnitario = BigDecimal.ZERO;
+        this.precio_unitario = BigDecimal.ZERO;
         this.subtotal = BigDecimal.ZERO;
     }
 
-    // Constructor con parámetros
-    public DetalleFactura(int facturaId, String descripcion, int cantidad, BigDecimal precioUnitario) {
-        this.facturaId = facturaId;
-        this.descripcion = descripcion;
-        this.cantidad = cantidad;
-        this.precioUnitario = precioUnitario;
-        calcularSubtotal();
-    }
-
     // Getters y Setters
-    public int getDetalleId() {
-        return detalleId;
+    public int getDetalle_id() {
+        return detalle_id;
     }
 
-    public void setDetalleId(int detalleId) {
-        this.detalleId = detalleId;
+    public void setDetalle_id(int detalle_id) {
+        this.detalle_id = detalle_id;
     }
 
-    public int getFacturaId() {
-        return facturaId;
+    public int getFactura_id() {
+        return factura_id;
     }
 
-    public void setFacturaId(int facturaId) {
-        this.facturaId = facturaId;
+    public void setFactura_id(int factura_id) {
+        this.factura_id = factura_id;
     }
 
-    public Integer getTratamientoId() {
-        return tratamientoId;
+    public Integer getTratamiento_id() {
+        return tratamiento_id;
     }
 
-    public void setTratamientoId(Integer tratamientoId) {
-        this.tratamientoId = tratamientoId;
+    public void setTratamiento_id(Integer tratamiento_id) {
+        this.tratamiento_id = tratamiento_id;
     }
 
     public String getDescripcion() {
@@ -72,16 +62,14 @@ public class DetalleFactura {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
-        calcularSubtotal();
     }
 
-    public BigDecimal getPrecioUnitario() {
-        return precioUnitario;
+    public BigDecimal getPrecio_unitario() {
+        return precio_unitario;
     }
 
-    public void setPrecioUnitario(BigDecimal precioUnitario) {
-        this.precioUnitario = precioUnitario;
-        calcularSubtotal();
+    public void setPrecio_unitario(BigDecimal precio_unitario) {
+        this.precio_unitario = precio_unitario;
     }
 
     public BigDecimal getSubtotal() {
@@ -92,41 +80,87 @@ public class DetalleFactura {
         this.subtotal = subtotal;
     }
 
-    public String getTratamientoNombre() {
-        return tratamientoNombre;
+    public String getTratamiento_nombre() {
+        return tratamiento_nombre;
     }
 
-    public void setTratamientoNombre(String tratamientoNombre) {
-        this.tratamientoNombre = tratamientoNombre;
+    public void setTratamiento_nombre(String tratamiento_nombre) {
+        this.tratamiento_nombre = tratamiento_nombre;
     }
 
-    public String getTratamientoCategoria() {
-        return tratamientoCategoria;
+    public String getTratamiento_categoria() {
+        return tratamiento_categoria;
     }
 
-    public void setTratamientoCategoria(String tratamientoCategoria) {
-        this.tratamientoCategoria = tratamientoCategoria;
+    public void setTratamiento_categoria(String tratamiento_categoria) {
+        this.tratamiento_categoria = tratamiento_categoria;
     }
 
-    // Métodos de utilidad
+    // ========== MÉTODOS ==========
+
     public void calcularSubtotal() {
-        if (precioUnitario != null && cantidad > 0) {
-            this.subtotal = precioUnitario.multiply(new BigDecimal(cantidad));
-        } else {
-            this.subtotal = BigDecimal.ZERO;
-        }
+        this.subtotal = this.precio_unitario.multiply(new BigDecimal(this.cantidad));
     }
 
-    // Formateo de moneda
     public String getPrecioUnitarioFormateado() {
-        if (precioUnitario == null) return "$0.00";
-        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("es", "EC"));
-        return formatter.format(precioUnitario);
+        return formatearMoneda(precio_unitario);
     }
 
     public String getSubtotalFormateado() {
-        if (subtotal == null) return "$0.00";
-        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("es", "EC"));
-        return formatter.format(subtotal);
+        return formatearMoneda(subtotal);
+    }
+
+    private String formatearMoneda(BigDecimal monto) {
+        if (monto == null) return "$0.00";
+        return String.format("$%.2f", monto);
+    }
+    // ========== MÉTODOS ALIAS PARA COMPATIBILIDAD CON JSP (camelCase) ==========
+
+    public int getDetalleId() {
+        return detalle_id;
+    }
+
+    public void setDetalleId(int detalleId) {
+        this.detalle_id = detalleId;
+    }
+
+    public int getFacturaId() {
+        return factura_id;
+    }
+
+    public void setFacturaId(int facturaId) {
+        this.factura_id = facturaId;
+    }
+
+    public Integer getTratamientoId() {
+        return tratamiento_id;
+    }
+
+    public void setTratamientoId(Integer tratamientoId) {
+        this.tratamiento_id = tratamientoId;
+    }
+
+    public BigDecimal getPrecioUnitario() {
+        return precio_unitario;
+    }
+
+    public void setPrecioUnitario(BigDecimal precioUnitario) {
+        this.precio_unitario = precioUnitario;
+    }
+
+    public String getTratamientoNombre() {
+        return tratamiento_nombre;
+    }
+
+    public void setTratamientoNombre(String tratamientoNombre) {
+        this.tratamiento_nombre = tratamientoNombre;
+    }
+
+    public String getTratamientoCategoria() {
+        return tratamiento_categoria;
+    }
+
+    public void setTratamientoCategoria(String tratamientoCategoria) {
+        this.tratamiento_categoria = tratamientoCategoria;
     }
 }

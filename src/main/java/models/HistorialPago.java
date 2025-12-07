@@ -1,62 +1,48 @@
 package models;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class HistorialPago {
-    private int pagoId;
-    private int facturaId;
-    private Timestamp fechaPago;
+
+    private int pago_id;
+    private int factura_id;
+    private LocalDateTime fecha_pago;
     private BigDecimal monto;
-    private String metodoPago; // Efectivo, Tarjeta, Transferencia, Cheque
+    private String metodo_pago;
     private String referencia;
-    private String recibidoPor;
+    private String recibido_por;
     private String observaciones;
 
-    // Campos adicionales para mostrar
-    private String numeroFactura;
-    private String pacienteNombre;
-
-    // Constructor vacío
+    // Constructor
     public HistorialPago() {
         this.monto = BigDecimal.ZERO;
-        this.metodoPago = "Efectivo";
-    }
-
-    // Constructor con parámetros
-    public HistorialPago(int facturaId, BigDecimal monto, String metodoPago, String recibidoPor) {
-        this.facturaId = facturaId;
-        this.monto = monto;
-        this.metodoPago = metodoPago;
-        this.recibidoPor = recibidoPor;
     }
 
     // Getters y Setters
-    public int getPagoId() {
-        return pagoId;
+    public int getPago_id() {
+        return pago_id;
     }
 
-    public void setPagoId(int pagoId) {
-        this.pagoId = pagoId;
+    public void setPago_id(int pago_id) {
+        this.pago_id = pago_id;
     }
 
-    public int getFacturaId() {
-        return facturaId;
+    public int getFactura_id() {
+        return factura_id;
     }
 
-    public void setFacturaId(int facturaId) {
-        this.facturaId = facturaId;
+    public void setFactura_id(int factura_id) {
+        this.factura_id = factura_id;
     }
 
-    public Timestamp getFechaPago() {
-        return fechaPago;
+    public LocalDateTime getFecha_pago() {
+        return fecha_pago;
     }
 
-    public void setFechaPago(Timestamp fechaPago) {
-        this.fechaPago = fechaPago;
+    public void setFecha_pago(LocalDateTime fecha_pago) {
+        this.fecha_pago = fecha_pago;
     }
 
     public BigDecimal getMonto() {
@@ -67,12 +53,12 @@ public class HistorialPago {
         this.monto = monto;
     }
 
-    public String getMetodoPago() {
-        return metodoPago;
+    public String getMetodo_pago() {
+        return metodo_pago;
     }
 
-    public void setMetodoPago(String metodoPago) {
-        this.metodoPago = metodoPago;
+    public void setMetodo_pago(String metodo_pago) {
+        this.metodo_pago = metodo_pago;
     }
 
     public String getReferencia() {
@@ -83,12 +69,12 @@ public class HistorialPago {
         this.referencia = referencia;
     }
 
-    public String getRecibidoPor() {
-        return recibidoPor;
+    public String getRecibido_por() {
+        return recibido_por;
     }
 
-    public void setRecibidoPor(String recibidoPor) {
-        this.recibidoPor = recibidoPor;
+    public void setRecibido_por(String recibido_por) {
+        this.recibido_por = recibido_por;
     }
 
     public String getObservaciones() {
@@ -99,56 +85,76 @@ public class HistorialPago {
         this.observaciones = observaciones;
     }
 
-    public String getNumeroFactura() {
-        return numeroFactura;
-    }
+    // ========== MÉTODOS DE FORMATEO ==========
 
-    public void setNumeroFactura(String numeroFactura) {
-        this.numeroFactura = numeroFactura;
-    }
-
-    public String getPacienteNombre() {
-        return pacienteNombre;
-    }
-
-    public void setPacienteNombre(String pacienteNombre) {
-        this.pacienteNombre = pacienteNombre;
-    }
-
-    // Métodos de utilidad para formato
     public String getFechaFormateada() {
-        if (fechaPago == null) return "";
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        return sdf.format(fechaPago);
+        if (fecha_pago == null) return "";
+        return fecha_pago.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
     public String getFechaHoraFormateada() {
-        if (fechaPago == null) return "";
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        return sdf.format(fechaPago);
+        if (fecha_pago == null) return "";
+        return fecha_pago.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
     }
 
     public String getMontoFormateado() {
-        if (monto == null) return "$0.00";
-        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("es", "EC"));
-        return formatter.format(monto);
+        return formatearMoneda(monto);
     }
 
-    // Icono del método de pago
-    public String getIconoMetodoPago() {
-        if (metodoPago == null) return "fa-money-bill";
+    private String formatearMoneda(BigDecimal monto) {
+        if (monto == null) return "$0.00";
+        return String.format("$%.2f", monto);
+    }
 
-        switch (metodoPago) {
-            case "Efectivo":
-                return "fa-money-bill-wave";
-            case "Tarjeta":
-                return "fa-credit-card";
-            case "Transferencia":
-                return "fa-exchange-alt";
-            case "Cheque":
-                return "fa-money-check";
-            default:
-                return "fa-money-bill";
+    public String getIconoMetodoPago() {
+        if (metodo_pago == null) return "fa-money-bill";
+        switch (metodo_pago) {
+            case "Efectivo": return "fa-money-bill-wave";
+            case "Tarjeta": return "fa-credit-card";
+            case "Transferencia": return "fa-exchange-alt";
+            case "Cheque": return "fa-money-check";
+            default: return "fa-dollar-sign";
         }
+    }
+    // ========== MÉTODOS ALIAS PARA COMPATIBILIDAD CON JSP (camelCase) ==========
+
+    public int getPagoId() {
+        return pago_id;
+    }
+
+    public void setPagoId(int pagoId) {
+        this.pago_id = pagoId;
+    }
+
+    public int getFacturaId() {
+        return factura_id;
+    }
+
+    public void setFacturaId(int facturaId) {
+        this.factura_id = facturaId;
+    }
+
+    public LocalDateTime getFechaPago() {
+        return fecha_pago;
+    }
+
+    public void setFechaPago(LocalDateTime fechaPago) {
+        this.fecha_pago = fechaPago;
+    }
+
+    public String getMetodoPago() {
+        return metodo_pago;
+    }
+
+    public void setMetodoPago(String metodoPago) {
+        this.metodo_pago = metodoPago;
+    }
+
+    public String getRecibidoPor() {
+        return recibido_por;
+    }
+
+    public void setRecibidoPor(String recibidoPor) {
+        this.recibido_por = recibidoPor;
     }
 }

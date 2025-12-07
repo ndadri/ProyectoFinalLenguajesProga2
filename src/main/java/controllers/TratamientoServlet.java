@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
-// OJO: La URL ahora es en singular para coincidir con tu lógica
 @WebServlet("/tratamiento")
 public class TratamientoServlet extends HttpServlet {
 
@@ -64,42 +63,49 @@ public class TratamientoServlet extends HttpServlet {
         if (precio_baseStr != null && !precio_baseStr.isEmpty()) {
             t.setPrecio_base(new BigDecimal(precio_baseStr));
         } else {
-            t.getPrecio_base();
+            t.setPrecio_base(BigDecimal.ZERO);
         }
 
         // Duración
         String duracionStr = request.getParameter("duracion");
         if (duracionStr != null && !duracionStr.isEmpty()) {
-            t.setDuracionMin(Integer.parseInt(duracionStr));
+            t.setDuracion_aproximada(Integer.parseInt(duracionStr));
         } else {
-            t.setDuracionMin(30);
+            t.setDuracion_aproximada(30);
         }
 
-        // Estado
-        String estadoStr = request.getParameter("estado");
-        if (estadoStr != null && !estadoStr.isEmpty()) {
-            t.setEstado(Integer.parseInt(estadoStr));
+        // Requiere anestesia
+        String anestesiaStr = request.getParameter("requiere_anestesia");
+        if (anestesiaStr != null && !anestesiaStr.isEmpty()) {
+            t.setRequiere_anestesia(Integer.parseInt(anestesiaStr));
         } else {
-            t.setEstado(1);
+            t.setRequiere_anestesia(0);
+        }
+
+        // Activo
+        String activoStr = request.getParameter("activo");
+        if (activoStr != null && !activoStr.isEmpty()) {
+            t.setActivo(Integer.parseInt(activoStr));
+        } else {
+            t.setActivo(1);
         }
 
         boolean exito;
         if (idStr == null || idStr.isEmpty()) {
             exito = tratamientoDAO.insertar(t);
         } else {
-            t.setId(Integer.parseInt(idStr));
+            t.setTratamiento_id(Integer.parseInt(idStr));
             exito = tratamientoDAO.actualizar(t);
         }
 
         if (exito) {
-            request.getSession().setAttribute("mensaje", "Guardado correctamente");
+            request.getSession().setAttribute("mensaje", "Tratamiento guardado correctamente");
             request.getSession().setAttribute("tipoMensaje", "success");
         } else {
-            request.getSession().setAttribute("mensaje", "Error al guardar");
+            request.getSession().setAttribute("mensaje", "Error al guardar el tratamiento");
             request.getSession().setAttribute("tipoMensaje", "error");
         }
 
-        // Redirige a la URL del servlet (singular)
         response.sendRedirect("tratamiento?action=listar");
     }
 
@@ -107,7 +113,6 @@ public class TratamientoServlet extends HttpServlet {
             throws ServletException, IOException {
         List<TratamientoOdontologico> lista = tratamientoDAO.obtenerTodos();
         request.setAttribute("tratamientos", lista);
-        // AQUÍ ESTABA EL ERROR: Ahora apunta a tratamiento.jsp (singular)
         request.getRequestDispatcher("/views/tratamiento.jsp").forward(request, response);
     }
 
@@ -128,6 +133,8 @@ public class TratamientoServlet extends HttpServlet {
             throws IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         tratamientoDAO.eliminar(id);
+        request.getSession().setAttribute("mensaje", "Tratamiento eliminado");
+        request.getSession().setAttribute("tipoMensaje", "success");
         response.sendRedirect("tratamiento?action=listar");
     }
 }
