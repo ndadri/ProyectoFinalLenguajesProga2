@@ -59,6 +59,11 @@
                 <span>Tratamientos</span>
             </a>
 
+            <a href="${pageContext.request.contextPath}/odontograma?action=listar" class="menu-item">
+                <i class="fas fa-tooth"></i>
+                <span>Odontogramas</span>
+            </a>
+
             <a href="${pageContext.request.contextPath}/factura?action=listar"
                class="menu-item ${pageContext.request.requestURI.contains('factura') ? 'active' : ''}">
                 <i class="fas fa-file-invoice-dollar"></i>
