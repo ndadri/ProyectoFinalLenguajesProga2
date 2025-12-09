@@ -173,10 +173,27 @@
 </div>
 
 <script>
-    // Auto redirect a login después de 3 segundos
+    // Auto redirect a login después de 5 segundos
     setTimeout(() => {
         window.location.href = 'login';
     }, 5000);
 </script>
 </body>
 </html>
+```
+
+---
+
+## 📝 **MODIFICACIONES HECHAS:**
+
+1. ✅ **Rutas relativas simples:** `href="login"` en lugar de rutas absolutas
+2. ✅ **JavaScript simple:** Redirección directa sin context path
+
+---
+
+## 📂 **UBICACIÓN CORRECTA:**
+
+Asegúrate que el archivo esté en:
+```
+webapp/
+└── index.html  ← AQUÍ (NO dentro de views/)
