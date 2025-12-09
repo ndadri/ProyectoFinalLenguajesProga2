@@ -6,6 +6,16 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!-- Vista: paciente-form.jsp
+Propósito: Formulario para crear o editar pacientes.
+Variables/atributos esperados:
+- paciente (models.Paciente) (opcional)
+Validaciones:
+- Cédula: exactamente 10 dígitos (pattern y validación JS).
+- Campo embarazo visible solo si género = 'F'.
+Notas:
+- Envía POST al servlet 'paciente' con action 'guardar' o 'actualizar'.
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

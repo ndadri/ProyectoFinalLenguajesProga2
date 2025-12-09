@@ -1,5 +1,12 @@
 package models;
-
+/**
+ * =============================================================================
+ * MODELO: Diente.java
+ * =============================================================================
+ * Descripción: Representa un diente específico dentro de un odontograma.
+ * Usa numeración FDI (Fédération Dentaire Internationale).
+ * =============================================================================
+ */
 public class Diente {
     private int dienteId;
     private int odontogramaId;

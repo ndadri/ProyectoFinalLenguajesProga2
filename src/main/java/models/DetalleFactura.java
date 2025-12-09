@@ -1,7 +1,14 @@
 package models;
 
 import java.math.BigDecimal;
-
+/**
+ * =============================================================================
+ * MODELO: DetalleFactura.java
+ * =============================================================================
+ * Descripción: Representa una línea/item de la factura. Cada detalle puede
+ * estar vinculado a un tratamiento del catálogo o ser un concepto libre.
+ * =============================================================================
+ */
 public class DetalleFactura {
 
     private int detalle_id;

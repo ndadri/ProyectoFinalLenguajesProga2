@@ -2,6 +2,33 @@ package models;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+/**
+ * =============================================================================
+ * MODELO: Paciente.java
+ * =============================================================================
+ * Descripción: Representa un paciente del sistema con toda su información
+ * personal, demográfica y médica. Incluye historial de alergias, enfermedades
+ * sistémicas, medicamentos y contactos de emergencia.
+ * =============================================================================
+ */
+// DATOS PERSONALES:
+// - pacienteId: Identificador único
+// - nombres, apellidos: Nombres y apellidos del paciente
+// - cedula: Número de identificación ÚNICO
+// - fechaNacimiento: Date de nacimiento
+// - edad: Calculada automáticamente en el servlet
+// - genero: Masculino, Femenino, Otro
+
+// DATOS DE CONTACTO:
+// - telefono, email, direccion: Información de contacto
+// - ocupacion: Profesión u ocupación
+// - contactoEmergencia, telefonoEmergencia: Contacto de emergencia
+
+// HISTORIAL MÉDICO:
+// - alergias: Alergias conocidas (medicamentos, materiales, etc.)
+// - enfermedadesSistemicas: Enfermedades crónicas o sistémicas
+// - medicamentosActuales: Medicación actual del paciente
+// - embarazada: Boolean nullable (solo para mujeres)
 
 public class Paciente {
     private int pacienteId;
@@ -173,6 +200,11 @@ public class Paciente {
     public void setMedicamentosActuales(String medicamentosActuales) {
         this.medicamentosActuales = medicamentosActuales;
     }
+// SISTEMA:
+// - activo: Boolean para eliminación lógica
+// - notas: Notas adicionales del paciente
+// - fechaRegistro: Timestamp automático de registro
+// - ultimaVisita: Date de la última consulta
 
     public Boolean getEmbarazada() {
         return embarazada;
@@ -214,7 +246,8 @@ public class Paciente {
         this.ultimaVisita = ultimaVisita;
     }
 
-    // Método auxiliar para obtener nombre completo
+    // MÉTODOS HELPER:
+// - getNombreCompleto(): Retorna nombres + " " + apellidos
     public String getNombreCompleto() {
         return nombres + " " + apellidos;
     }

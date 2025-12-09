@@ -17,7 +17,14 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * OdontogramaServlet - Controlador para la gestión de odontogramas dentales
+ *
+ * Descripción: Maneja la creación y actualización de odontogramas, que son
+ * representaciones gráficas del estado dental de los pacientes. Permite registrar
+ * el estado de cada uno de los 32 dientes con observaciones específicas.
+ * Implementa control de acceso basado en roles.
+ */
 @WebServlet("/odontograma")
 public class OdontogramaServlet extends HttpServlet {
     private OdontogramaDAO odontogramaDAO;

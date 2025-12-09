@@ -1,5 +1,12 @@
 package models;
-
+/**
+ * =============================================================================
+ * MODELO: Especialidad.java
+ * =============================================================================
+ * Descripción: Representa una especialidad odontológica. Se usa para
+ * categorizar a los odontólogos del sistema.
+ * =============================================================================
+ */
 public class Especialidad {
     private int especialidadId;
     private String nombre;

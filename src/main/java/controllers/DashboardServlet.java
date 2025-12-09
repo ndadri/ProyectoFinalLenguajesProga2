@@ -8,6 +8,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 
+/**
+ * DashboardServlet - Controlador del panel principal del sistema
+ *
+ * Descripción: Muestra el dashboard con estadísticas generales del sistema
+ * incluyendo total de pacientes, citas del día, citas pendientes y citas
+ * recientes. Requiere que el usuario haya iniciado sesión.
+ */
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
 

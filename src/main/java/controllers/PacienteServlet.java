@@ -11,7 +11,14 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
-
+/**
+ * PacienteServlet - Controlador para la gestión de pacientes
+ *
+ * Descripción: Maneja el registro completo de pacientes incluyendo datos
+ * personales, información médica, historial de alergias y enfermedades.
+ * Calcula automáticamente la edad basándose en la fecha de nacimiento.
+ * Implementa búsqueda por múltiples criterios.
+ */
 @WebServlet("/paciente")
 public class PacienteServlet extends HttpServlet {
     private PacienteDAO pacienteDAO;

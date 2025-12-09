@@ -10,6 +10,17 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.Map" %>
+<!-- Vista: odontograma-detalle.jsp
+Propósito: Interfaz visual del odontograma de un paciente; permite editar el estado de cada diente mediante un modal.
+Variables/atributos esperados:
+- odontograma (models.Odontograma)
+- dientes (List<models.Diente>)
+Comportamiento JS:
+- editarDiente(numero, estado): abre modal para cambiar estado/observaciones.
+- guardarDiente(): envía petición POST (fetch) a 'odontograma' con action 'guardar_diente'.
+Notas:
+- El mapa de dientes se crea en servidor y se renderiza con clases CSS por estado.
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

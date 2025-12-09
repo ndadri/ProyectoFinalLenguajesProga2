@@ -3,7 +3,14 @@ package models;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
+/**
+ * =============================================================================
+ * MODELO: HistorialPago.java
+ * =============================================================================
+ * Descripción: Representa un pago realizado contra una factura. Permite
+ * pagos parciales y múltiples pagos para una misma factura.
+ * =============================================================================
+ */
 public class HistorialPago {
 
     private int pago_id;

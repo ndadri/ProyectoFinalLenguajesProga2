@@ -9,6 +9,12 @@
 <%@ page import="models.Consulta" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<!-- Vista: consulta.jsp
+Propósito: Listado de consultas médicas/odontológicas y posible vista de historial por paciente.
+Variables/atributos esperados:
+- consultas (List<models.Consulta>)
+- historialPaciente (Boolean) (opcional)
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

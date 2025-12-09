@@ -3,13 +3,19 @@ package dao;
 import models.*;
 import utils.ConexionBdd;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * =============================================================================
+ * ARCHIVO: FacturaDAO.java
+ * =============================================================================
+ * Descripción: Sistema completo de facturación con detalles de tratamientos,
+ * historial de pagos y actualización automática de estados según pagos.
+ * =============================================================================
+ */
 public class FacturaDAO {
 
     private Connection getConnection() throws SQLException {

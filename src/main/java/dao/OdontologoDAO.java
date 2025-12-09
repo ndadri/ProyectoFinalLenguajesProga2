@@ -7,7 +7,14 @@ import utils.ConexionBdd;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * =============================================================================
+ * ARCHIVO: OdontologoDAO.java
+ * =============================================================================
+ * Descripción: Gestiona odontólogos incluyendo especialidades y vinculación
+ * con usuarios del sistema para acceso con credenciales.
+ * =============================================================================
+ */
 public class OdontologoDAO {
 
     private Connection getConnection() throws SQLException {

@@ -6,6 +6,19 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!-- Vista: login.jsp
+Propósito: Formulario de inicio de sesión para el sistema DentalCare.
+Variables/atributos esperados en request/session:
+- error (opcional): Mensaje de error para mostrar si las credenciales son inválidas.
+Secciones principales:
+1) Estilos embebidos y assets (Font Awesome).
+2) Panel izquierdo informativo (branding y descripción).
+3) Panel derecho con el formulario de login (usuario, password).
+4) Bloque <c:if> que muestra mensajes de error si existen.
+    Notas de implementación:
+    - El formulario realiza POST a la ruta 'login'.
+    - No se hacen cambios funcionales, sólo documentación para facilitar mantenimiento.
+    -->
 <!DOCTYPE html>
 <html lang="es">
 <head>

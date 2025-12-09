@@ -13,7 +13,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
-
+/**
+ * FacturaServlet - Controlador para la gestión de facturación y pagos
+ *
+ * Descripción: Maneja todo el sistema de facturación incluyendo creación de facturas,
+ * detalles de tratamientos, registro de pagos y seguimiento de cuentas por cobrar.
+ * Permite generar facturas automáticas y gestionar el historial de pagos.
+ */
 @WebServlet("/factura")
 public class FacturaServlet extends HttpServlet {
     private FacturaDAO facturaDAO;

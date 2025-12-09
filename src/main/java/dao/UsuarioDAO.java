@@ -4,7 +4,14 @@ import models.Usuario;
 import utils.ConexionBdd;
 
 import java.sql.*;
-
+/**
+ * =============================================================================
+ * ARCHIVO: UsuarioDAO.java
+ * =============================================================================
+ * Descripción: Gestión de usuarios con autenticación BCrypt. Vincula usuarios
+ * con odontólogos y maneja diferentes tipos (Admin, Recepción, Odontólogo).
+ * =============================================================================
+ */
 public class UsuarioDAO {
 
     // Validar credenciales SIN HASH
@@ -45,6 +52,40 @@ public class UsuarioDAO {
         }
 
         return null;
+    }
+
+    public boolean cambiarPassword(int usuarioId, String nuevaPassword) {
+        String sql = "UPDATE usuario SET password = ? WHERE usuario_id = ?";
+
+        try (Connection conn = ConexionBdd.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, nuevaPassword); // SIN HASH
+            ps.setInt(2, usuarioId);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean actualizarEmail(int usuarioId, String email) {
+        String sql = "UPDATE usuario SET email = ? WHERE usuario_id = ?";
+
+        try (Connection conn = ConexionBdd.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, email);
+            ps.setInt(2, usuarioId);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public void actualizarUltimoAcceso(int usuarioId) {

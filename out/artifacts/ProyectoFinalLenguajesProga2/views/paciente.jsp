@@ -2,6 +2,16 @@
 <%@ page import="models.Paciente" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<!-- Vista: paciente.jsp
+Propósito: Listado y gestión de pacientes (buscar, crear, editar, eliminar).
+Variables/atributos esperados:
+- pacientes (List<models.Paciente>)
+- mensaje, tipoMensaje en session (opcional)
+Secciones principales:
+1) Sidebar y header incluidos.
+2) Barra de búsqueda.
+3) Tabla de pacientes o estado vacío.
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

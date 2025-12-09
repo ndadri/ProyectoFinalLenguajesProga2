@@ -8,6 +8,21 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.*" %>
 <%@ page import="java.util.List" %>
+<!--
+Vista: factura-detalle.jsp
+Propósito: Mostrar detalle completo de una factura: líneas, totales y historial de pagos.
+Variables/atributos esperados:
+- factura (models.Factura)
+- detalles (List<models.DetalleFactura>)
+- pagos (List<models.HistorialPago>)
+Secciones principales:
+1) Cabecera con acciones (imprimir, registrar pago).
+2) Información general de la factura y paciente.
+3) Tabla de detalles y resumen de totales.
+4) Historial de pagos y resumen final (saldo pendiente).
+Notas:
+- La vista contiene bloques no imprimibles (no-print) para botones de acción.
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

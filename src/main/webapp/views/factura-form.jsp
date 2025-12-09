@@ -1,6 +1,29 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: adria
+  Date: 06/dic/2025
+  Time: 11:23 a. m.
+  To change this template use File | Settings | File Templates.
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.*" %>
 <%@ page import="java.util.List" %>
+<!-- Vista: factura-form.jsp
+Propósito: Formulario para crear o editar facturas, agregar detalles (líneas) y calcular totales.
+Variables/atributos esperados:
+- factura (models.Factura) (opcional) -> modo edición si presente.
+- pacientes (List<models.Paciente>) para seleccionar paciente.
+- tratamientos (List<models.TratamientoOdontologico>) para autocompletar líneas.
+- detalles (List<models.DetalleFactura>) (opcional) para inicializar en edición.
+- numeroFactura (String) para el nuevo número generado por el servidor.
+Comportamiento JS importante:
+- TRATAMIENTOS: objeto con data de tratamientos para autoselección.
+- Funciones: agregarDetalle(), eliminarDetalle(), seleccionarTratamiento(), calcularTotales().
+- Validaciones en submit: al menos una línea de detalle y subtotal > 0.
+- IVA fijo en JS: 15%.
+Notas:
+- No se modifica la lógica; se añade documentación para facilitar mantenimiento.
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

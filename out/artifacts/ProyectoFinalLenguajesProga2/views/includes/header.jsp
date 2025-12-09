@@ -6,7 +6,14 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<!-- Include: includes/header.jsp
+Propósito: Cabecera de la aplicación que muestra información del usuario (nombre, rol) y control para mostrar/ocultar el sidebar en dispositivos móviles.
+Variables/atributos esperados en session:
+- sessionScope.usuario.usuario (nombre de usuario)
+- sessionScope.usuario.tipoUsuarioNombre (nombre del rol)
+Comportamiento JS:
+- #toggleSidebar alterna la clase 'active' en el elemento .sidebar (útil en móviles).
+-->
 <header class="header">
     <div class="header-left">
         <button class="btn-icon" id="toggleSidebar" style="display: none;">

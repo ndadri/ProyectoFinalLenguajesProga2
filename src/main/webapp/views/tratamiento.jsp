@@ -10,130 +10,182 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
     Usuario usuarioTratamiento = (Usuario) session.getAttribute("usuario");
+    if (usuarioTratamiento == null) {
+        response.sendRedirect("login");
+        return;
+    }
 %>
+<!-- Vista: tratamiento.jsp
+Propósito: Listado de tratamientos odontológicos y gestión (crear, editar, eliminar).
+Variables/atributos esperados:
+- tratamientos (List<models.TratamientoOdontologico>)
+- sessionScope.mensaje, sessionScope.tipoMensaje (opcional) para notificaciones
+Secciones principales:
+1) Cabecera con botón para nuevo tratamiento.
+2) Mensaje de alerta (opcional).
+3) Tabla de tratamientos con acciones (editar, eliminar).
+Notas:
+- Esta vista usa JSTL tags (c:forEach, c:if), asegurarse de que el taglib esté disponible en el proyecto.
+-->
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Tratamientos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tratamientos - DentalCare</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-light">
+<body>
+<!-- SIDEBAR -->
+<jsp:include page="includes/sidebar.jsp" />
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">DentalCare</a>
-    </div>
-</nav>
+<div class="main-content">
+    <!-- HEADER -->
+    <jsp:include page="includes/header.jsp" />
 
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="fas fa-tooth"></i> Gestión de Tratamientos</h2>
-        <% if (usuarioTratamiento.tieneAccesoTotal()) { %>
-        <a href="tratamiento?action=nuevo" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Nuevo Tratamiento
-        </a>
-        <% } else { %>
-        <span class="badge bg-secondary" style="font-size: 1rem; padding: 0.5rem 1rem;">
-            <i class="fas fa-eye"></i> Solo Lectura
-        </span>
-        <% } %>
-    </div>
-
-    <!-- MENSAJE DE ALERTA -->
-    <c:if test="${not empty sessionScope.mensaje}">
-        <div class="alert alert-${sessionScope.tipoMensaje} alert-dismissible fade show" role="alert">
-                ${sessionScope.mensaje}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">
+                    <i class="fas fa-tooth"></i> Gestión de Tratamientos
+                </h1>
+                <p class="page-subtitle">Catálogo de tratamientos dentales</p>
+            </div>
+            <% if (usuarioTratamiento.tieneAccesoTotal()) { %>
+            <a href="tratamiento?action=nuevo" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nuevo Tratamiento
+            </a>
+            <% } else { %>
+            <span class="badge" style="background: #6B7280; color: white; font-size: 1rem; padding: 0.5rem 1rem;">
+                <i class="fas fa-eye"></i> Solo Lectura
+            </span>
+            <% } %>
         </div>
-        <c:remove var="mensaje" scope="session"/>
-        <c:remove var="tipoMensaje" scope="session"/>
-    </c:if>
 
-    <!-- TABLA DE TRATAMIENTOS -->
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <table class="table table-striped table-hover mb-0">
-                <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Código</th>
-                    <th>Nombre</th>
-                    <th>Categoría</th>
-                    <th>Precio Base</th>
-                    <th>Duración</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
+        <!-- MENSAJE DE ALERTA -->
+        <c:if test="${not empty sessionScope.mensaje}">
+            <div class="alert alert-${sessionScope.tipoMensaje}">
+                <i class="fas fa-<%= "success".equals(session.getAttribute("tipoMensaje")) ? "check-circle" : "exclamation-circle" %>"></i>
+                    ${sessionScope.mensaje}
+                <button class="close-alert" onclick="this.parentElement.style.display='none'">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <c:remove var="mensaje" scope="session"/>
+            <c:remove var="tipoMensaje" scope="session"/>
+        </c:if>
 
-                <tbody>
-                <c:forEach var="t" items="${tratamientos}">
-                    <tr>
-                        <td>${t.tratamientoId}</td>
-                        <td><strong>${t.codigo}</strong></td>
-                        <td>${t.nombre}</td>
-                        <td>
-                            <span class="badge bg-info">${t.categoria}</span>
-                        </td>
-                        <td>$${t.precioBase}</td>
-                        <td>${t.duracionAproximada} min</td>
-                        <td>
-                            <c:choose>
-                                <c:when test="${t.activo == 1}">
-                                    <span class="badge bg-success">Activo</span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="badge bg-secondary">Inactivo</span>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-                        <td>
-                            <% if (usuarioTratamiento.tieneAccesoTotal()) { %>
-                            <div class="btn-group" role="group">
-                                <a href="tratamiento?action=editar&id=${t.tratamientoId}"
-                                   class="btn btn-warning btn-sm"
-                                   title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="tratamiento?action=eliminar&id=${t.tratamientoId}"
-                                   class="btn btn-danger btn-sm"
-                                   title="Eliminar"
-                                   onclick="return confirm('¿Está seguro de eliminar el tratamiento \"${t.nombre}\"?\n\nEsta acción no se puede deshacer.');">
-                                <i class="fas fa-trash"></i>
-                                </a>
-                            </div>
-                            <% } else { %>
-                            <span class="text-muted">
-                                <i class="fas fa-eye"></i> Solo lectura
-                            </span>
-                            <% } %>
-                        </td>
-                    </tr>
-                </c:forEach>
+        <!-- TABLA DE TRATAMIENTOS -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Precio Base</th>
+                            <th>Duración</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="t" items="${tratamientos}">
+                            <tr>
+                                <td><strong>#${t.tratamientoId}</strong></td>
+                                <td><span class="badge" style="background: #3B82F6; color: white;">${t.codigo}</span></td>
+                                <td>${t.nombre}</td>
+                                <td>
+                                    <span class="badge" style="background: #06B6D4; color: white;">${t.categoria}</span>
+                                </td>
+                                <td><strong>$${t.precioBase}</strong></td>
+                                <td>${t.duracionAproximada} min</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${t.activo == 1}">
+                                            <span class="badge badge-success">Activo</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="badge" style="background: #6B7280; color: white;">Inactivo</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <% if (usuarioTratamiento.tieneAccesoTotal()) { %>
+                                    <div class="actions">
+                                        <a href="tratamiento?action=editar&id=${t.tratamientoId}"
+                                           class="btn-icon btn-edit"
+                                           title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button onclick="confirmarEliminacion(${t.tratamientoId}, '${t.nombre}')"
+                                                class="btn-icon btn-delete"
+                                                title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    <% } else { %>
+                                    <span style="color: #6B7280; font-size: 0.875rem;">
+                                        <i class="fas fa-eye"></i> Solo lectura
+                                    </span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        </c:forEach>
 
-                <c:if test="${empty tratamientos}">
-                    <tr>
-                        <td colspan="8" class="text-center text-muted py-4">
-                            <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
-                            <p class="mb-0">No hay tratamientos registrados</p>
-                        </td>
-                    </tr>
+                        <c:if test="${empty tratamientos}">
+                            <tr>
+                                <td colspan="8">
+                                    <div class="empty-state">
+                                        <i class="fas fa-tooth" style="font-size: 4rem; color: #D1D5DB;"></i>
+                                        <h3>No hay tratamientos registrados</h3>
+                                        <p>Comienza creando el primer tratamiento</p>
+                                        <% if (usuarioTratamiento.tieneAccesoTotal()) { %>
+                                        <a href="tratamiento?action=nuevo" class="btn btn-primary">
+                                            <i class="fas fa-plus"></i> Nuevo Tratamiento
+                                        </a>
+                                        <% } %>
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:if>
+                        </tbody>
+                    </table>
+                </div>
+
+                <c:if test="${not empty tratamientos}">
+                    <div class="table-footer">
+                        <p class="table-info">
+                            <i class="fas fa-info-circle"></i>
+                            Total de tratamientos: <strong>${tratamientos.size()}</strong>
+                        </p>
+                    </div>
                 </c:if>
-
-                </tbody>
-            </table>
+            </div>
         </div>
-    </div>
-
-    <div class="mt-3 text-muted">
-        <small>
-            <i class="fas fa-info-circle"></i>
-            Total de tratamientos: <strong>${tratamientos.size()}</strong>
-        </small>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function confirmarEliminacion(id, nombre) {
+        if (confirm('¿Está seguro de eliminar el tratamiento "' + nombre + '"?\n\nEsta acción no se puede deshacer.')) {
+            window.location.href = 'tratamiento?action=eliminar&id=' + id;
+        }
+    }
+
+    // Auto-hide alerts
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.transition = 'opacity 0.5s';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+</script>
 </body>
 </html>

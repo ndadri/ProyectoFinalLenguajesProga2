@@ -8,7 +8,14 @@ import utils.ConexionBdd;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * =============================================================================
+ * ARCHIVO: OdontogramaDAO.java
+ * =============================================================================
+ * Descripción: Maneja odontogramas dentales con 32 dientes. Control de acceso
+ * por rol: odontólogos ven solo odontogramas de sus pacientes.
+ * =============================================================================
+ */
 public class OdontogramaDAO {
 
     private Connection getConnection() throws SQLException {

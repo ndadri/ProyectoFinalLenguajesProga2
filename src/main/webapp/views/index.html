@@ -1,3 +1,14 @@
+<!-- Vista: index.html
+  Propósito: Página de bienvenida pública del sistema DentalCare. Muestra branding, descripción y enlaces rápidos.
+  Comportamiento adicional:
+    - Redirige automáticamente a 'login' después de unos segundos (setTimeout al final).
+  Secciones principales:
+    1) Cabecera con meta y estilos (Font Awesome).
+    2) Contenido principal con logo, botones y features.
+    3) Script que redirige al login después de 5 segundos.
+  Notas:
+    - Archivo estático HTML (no JSP). No se cambió comportamiento, sólo documentación.
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -180,20 +191,3 @@
 </script>
 </body>
 </html>
-```
-
----
-
-## 📝 **MODIFICACIONES HECHAS:**
-
-1. ✅ **Rutas relativas simples:** `href="login"` en lugar de rutas absolutas
-2. ✅ **JavaScript simple:** Redirección directa sin context path
-
----
-
-## 📂 **UBICACIÓN CORRECTA:**
-
-Asegúrate que el archivo esté en:
-```
-webapp/
-└── index.html  ← AQUÍ (NO dentro de views/)

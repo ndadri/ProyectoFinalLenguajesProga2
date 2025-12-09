@@ -11,6 +11,14 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.time.LocalDate" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
+<!-- Vista: odontologo-form.jsp
+Propósito: Formulario para crear o editar un odontólogo.
+Variables/atributos esperados:
+- odontologo (models.Odontologo) (opcional)
+- especialidades (List<models.Especialidad>)
+Validaciones:
+- Cédula: patrón numérico de 10 dígitos (validación JS en submit).
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

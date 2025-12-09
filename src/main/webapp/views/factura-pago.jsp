@@ -7,6 +7,15 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.Factura" %>
+<!-- Vista: factura-pago.jsp
+Propósito: Formulario para registrar un pago contra una factura existente.
+Variables/atributos esperados:
+- factura (models.Factura)
+Validaciones/Comportamiento:
+- El monto no puede ser mayor al saldo pendiente (validación JS y atributo max en input).
+- Ofrece botones de monto sugerido (Pago Total, 50, 100, etc.).
+- Envía POST al servlet 'factura' con action 'registrar_pago'.
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

@@ -3,24 +3,44 @@ package models;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
+/**
+ * =============================================================================
+ * MODELO: Cita.java
+ * =============================================================================
+ * Descripción: Representa una cita médica odontológica entre un paciente y
+ * un odontólogo. Incluye fecha/hora, duración, tipo, estado y métodos helper
+ * para formateo y visualización.
+ * =============================================================================
+ */
 public class Cita {
+    // citaId: Identificador único de la cita
     private int citaId;
+    // - pacienteId, odontologoId: Referencias a paciente y odontólogo
     private int pacienteId;
     private int odontologoId;
+    // - fechaHora: Timestamp con fecha y hora de la cita
     private Timestamp fechaHora;
+    // - duracionMinutos: Duración estimada de la cita
     private int duracionMinutos;
+    // - motivo: Razón de la consulta
     private String motivo;
+    // - tipoCita: Primera_Vez, Control, Urgencia, etc.
     private String tipoCita;
+    // - estado: Programada, Confirmada, En_Curso, Completada, Cancelada, No_Asistio
     private String estado;
+    // - consultorio: Número o nombre del consultorio
     private String consultorio;
     private String observaciones;
+    // - recordatorioEnviado: Flag para sistema de recordatorios
     private boolean recordatorioEnviado;
     private Timestamp fechaCreacion;
 
     // Campos adicionales para mostrar
+    // - pacienteNombre: Nombre completo del paciente (de JOIN)
     private String pacienteNombre;
+    // - odontologoNombre: Nombre completo del odontólogo (de JOIN)
     private String odontologoNombre;
+    // - pacienteTelefono, pacienteCedula: Datos adicionales del paciente
     private String pacienteTelefono;
     private String pacienteCedula;
 
@@ -166,7 +186,15 @@ public class Cita {
         this.pacienteCedula = pacienteCedula;
     }
 
-    // Métodos auxiliares
+    // MÉTODOS HELPER:
+// - getFechaFormateada(): Retorna fecha en formato dd/MM/yyyy
+// - getHoraFormateada(): Retorna hora en formato HH:mm
+// - getEstadoColor(): Retorna color CSS según el estado
+//   * Confirmada/Completada: "success" (verde)
+//   * Programada: "info" (azul)
+//   * En_Curso: "warning" (amarillo)
+//   * Cancelada/No_Asistio: "error" (rojo)
+
     public String getFechaFormateada() {
         if (fechaHora != null) {
             LocalDateTime ldt = fechaHora.toLocalDateTime();

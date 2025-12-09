@@ -2,6 +2,35 @@ package models;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+/**
+ * =============================================================================
+ * MODELO: Consulta.java
+ * =============================================================================
+ * Descripción: Representa el registro médico completo de una consulta
+ * odontológica. Incluye motivo, síntomas, diagnóstico, tratamiento aplicado,
+ * dientes tratados y seguimiento requerido.
+ * =============================================================================
+ */
+
+// ATRIBUTOS PRINCIPALES:
+// - consultaId: Identificador único de la consulta
+// - citaId: Referencia a la cita (puede ser NULL si es consulta sin cita previa)
+// - pacienteId, odontologoId: Referencias obligatorias
+// - fechaConsulta: Timestamp automático de registro
+
+// INFORMACIÓN MÉDICA:
+// - motivoConsulta: Razón por la que el paciente acude
+// - sintomas: Descripción de síntomas presentados
+// - diagnostico: Diagnóstico profesional del odontólogo
+// - tratamiento: Tratamiento aplicado o recetado
+// - dientesTratados: Lista de piezas dentales tratadas (ej: "16, 17, 18")
+// - procedimientos: Procedimientos realizados
+
+// SEGUIMIENTO:
+// - observaciones: Notas adicionales
+// - pronostico: Pronóstico de evolución
+// - proximaCita: Fecha sugerida para próxima cita
+// - requiereSeguimiento: Boolean que indica si necesita seguimiento
 
 public class Consulta {
     private int consultaId;
@@ -28,7 +57,10 @@ public class Consulta {
 
     private Timestamp fechaCreacion;
 
-    // Campos adicionales para mostrar
+
+// CAMPOS ADICIONALES (JOIN):
+// - pacienteNombre, pacienteCedula, odontologoNombre
+
     private String pacienteNombre;
     private String pacienteCedula;
     private String odontologoNombre;

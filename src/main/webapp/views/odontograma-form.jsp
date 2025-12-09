@@ -8,6 +8,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.Paciente" %>
 <%@ page import="java.util.List" %>
+<!-- Vista: odontograma-form.jsp
+Propósito: Formulario para crear un nuevo odontograma para un paciente.
+Variables/atributos esperados:
+- pacientes (List<models.Paciente>)
+Notas:
+- Al crear, el backend suele inicializar los 32 dientes permanentes con estado 'Sano'.
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

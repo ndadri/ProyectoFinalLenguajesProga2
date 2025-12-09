@@ -2,6 +2,18 @@ package models;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+/**
+ * =============================================================================
+ * MODELO: Odontologo.java
+ * =============================================================================
+ * Descripción: Representa un odontólogo del sistema con datos profesionales
+ * y personales. Se vincula con un usuario para permitir acceso al sistema.
+ * =============================================================================
+ */
+
+// DATOS DE CONTACTO:
+// - telefono, celular, email, direccion: Información de contacto
+// - fechaNacimiento, genero: Datos demográficos
 
 public class Odontologo {
     private int odontologoId;
@@ -17,11 +29,15 @@ public class Odontologo {
     private String direccion;
     private Date fechaNacimiento;
     private String genero;
+// - activo: Boolean para eliminación lógica
+// - fechaCreacion: Timestamp automático de creación
     private boolean activo;
     private Timestamp fechaCreacion;
     private Integer usuario_Id;
 
-    // Campos adicionales para mostrar
+    // CAMPOS ADICIONALES (JOIN):
+// - especialidadNombre: Nombre de la especialidad (ej: Ortodoncia)
+// - nombreUsuario: Nombre de usuario para login
     private String especialidadNombre;
     private String nombreUsuario;
 
@@ -175,7 +191,8 @@ public class Odontologo {
         this.nombreUsuario = nombreUsuario;
     }
 
-    // Método auxiliar para obtener nombre completo
+    // MÉTODOS HELPER:
+// - getNombreCompleto(): Retorna "Dr(a). " + nombres + " " + apellidos
     public String getNombreCompleto() {
         return "Dr(a). " + nombres + " " + apellidos;
     }

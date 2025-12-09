@@ -1,3 +1,10 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: adria
+  Date: 05/dic/2025
+  Time: 05:51 p. m.
+  To change this template use File | Settings | File Templates.
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.Usuario" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
@@ -8,7 +15,14 @@
         return;
     }
 %>
-
+<!-- Include: includes/sidebar.jsp
+Propósito: Menú lateral principal con enlaces a las secciones del sistema.
+Variables/atributos esperados en session:
+- sessionScope.usuario.tipoId (para condicionar permisos de menú)
+Notas:
+- Usa pageContext.request.contextPath para construir rutas relativas.
+- Algunas entradas del menú aparecen sólo para ciertos roles (ej. tipoId == 1 admin)
+-->
 <div class="sidebar">
     <!-- Logo -->
     <div class="sidebar-logo">
@@ -95,14 +109,12 @@
 
         <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--border-color);">
 
-        <!-- Configuración - SOLO Admin -->
-        <% if (usuarioMenu.isAdmin()) { %>
+        <!-- Configuración - TODOS pueden acceder -->
         <a href="${pageContext.request.contextPath}/configuracion"
            class="menu-item ${pageContext.request.requestURI.contains('configuracion') ? 'active' : ''}">
             <i class="fas fa-cog"></i>
             <span>Configuración</span>
         </a>
-        <% } %>
 
         <!-- Logout - TODOS -->
         <a href="${pageContext.request.contextPath}/logout" class="menu-item">

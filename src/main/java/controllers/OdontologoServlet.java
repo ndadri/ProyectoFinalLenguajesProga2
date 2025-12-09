@@ -12,7 +12,14 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
-
+/**
+ * OdontologoServlet - Controlador para la gestión de odontólogos
+ *
+ * Descripción: Maneja el registro completo de odontólogos incluyendo sus
+ * datos personales, profesionales y credenciales de acceso al sistema.
+ * Crea automáticamente un usuario vinculado para que el odontólogo pueda
+ * iniciar sesión en el sistema.
+ */
 @WebServlet("/odontologo")
 public class OdontologoServlet extends HttpServlet {
     private OdontologoDAO odontologoDAO;

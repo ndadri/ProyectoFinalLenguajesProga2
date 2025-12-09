@@ -8,7 +8,13 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
-
+/**
+ * TratamientoServlet - Controlador para la gestión del catálogo de tratamientos
+ *
+ * Descripción: Maneja el catálogo de tratamientos odontológicos disponibles
+ * incluyendo código, nombre, descripción, precio base, duración y requisitos.
+ * Estos tratamientos se usan en la facturación y planificación de consultas.
+ */
 @WebServlet("/tratamiento")
 public class TratamientoServlet extends HttpServlet {
 

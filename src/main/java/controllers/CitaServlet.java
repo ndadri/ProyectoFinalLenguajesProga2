@@ -13,7 +13,13 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
-
+/**
+ * CitaServlet - Controlador para la gestión de citas odontológicas
+ *
+ * Descripción: Maneja todas las operaciones CRUD de citas médicas, incluyendo
+ * la creación, edición, confirmación, cancelación y eliminación de citas.
+ * Implementa control de acceso basado en roles (Admin, Recepción, Odontólogo).
+ */
 @WebServlet("/cita")
 public class CitaServlet extends HttpServlet {
     private CitaDAO citaDAO;

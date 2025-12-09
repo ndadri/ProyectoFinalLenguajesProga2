@@ -10,6 +10,18 @@
 <%@ page import="models.Paciente" %>
 <%@ page import="models.Odontologo" %>
 <%@ page import="java.util.List" %>
+<!-- Vista: consulta-form.jsp
+Propósito: Formulario para registrar o editar una consulta clínica.
+Variables/atributos esperados:
+- consulta (models.Consulta) (opcional) -> modo edición si está presente.
+- pacientes (List<models.Paciente>)
+- odontologos (List<models.Odontologo>)
+Validaciones destacadas:
+- Campos obligatorios: paciente, odontólogo, motivo, diagnóstico, tratamiento.
+- El campo paciente puede estar deshabilitado en edición (se incluye hidden con el id).
+Notas:
+- Envía POST al servlet 'consulta' con action 'guardar' o 'actualizar'.
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

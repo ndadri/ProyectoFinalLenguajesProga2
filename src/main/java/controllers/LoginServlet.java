@@ -7,7 +7,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
-
+/**
+ * LoginServlet - Controlador de autenticación de usuarios
+ *
+ * Descripción: Maneja el inicio de sesión de usuarios en el sistema.
+ * Valida credenciales, crea sesiones y actualiza el último acceso.
+ * Redirige a usuarios ya autenticados al dashboard.
+ */
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     private UsuarioDAO usuarioDAO;
@@ -56,20 +62,5 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("error", "Usuario o contraseña incorrectos");
             request.getRequestDispatcher("/views/login.jsp").forward(request, response);
         }
-    }
-}
-
-@WebServlet("/logout")
-class LogoutServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-
-        response.sendRedirect("login");
     }
 }

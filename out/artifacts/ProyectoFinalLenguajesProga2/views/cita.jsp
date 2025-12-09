@@ -8,6 +8,24 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.Cita" %>
 <%@ page import="java.util.List" %>
+<!-- Vista: cita.jsp
+Propósito: Listado y gestión de citas (mostrar, filtrar, acciones como confirmar, completar, cancelar, eliminar).
+Variables/atributos esperados:
+- citas (List<models.Cita>)
+- estadoFiltro (String) (opcional)
+- soloHoy (Boolean) (opcional)
+- mensaje, tipoMensaje en session (opcional) para notificaciones
+Secciones principales:
+1) Inclusión del sidebar y header.
+2) Cabecera de página con título y botón para crear nueva cita.
+3) Mensajes de notificación (se leen de session).
+4) Barra de filtros por estado/fecha.
+5) Tabla de citas o estado vacío si no hay citas.
+Notas:
+- Los botones y acciones realizan llamadas GET/POST a las rutas del servlet 'cita' con parámetros action.
+- Se mantiene la lógica de plantilla JSP sin cambios funcionales; sólo se documenta.
+
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

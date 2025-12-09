@@ -1,8 +1,15 @@
 package models;
 
 import java.sql.Date;
-import java.sql.Timestamp;
-
+/**
+ * =============================================================================
+ * MODELO: Odontograma.java
+ * =============================================================================
+ * Descripción: Representa el odontograma de un paciente. Es el contenedor
+ * de los 32 dientes. Cada paciente puede tener múltiples odontogramas para
+ * hacer seguimiento histórico.
+ * =============================================================================
+ */
 public class Odontograma {
     private int odontogramaId;
     private int pacienteId;

@@ -1,7 +1,15 @@
 package models;
 
 import java.sql.Timestamp;
-
+/**
+ * =============================================================================
+ * MODELO: Usuario.java
+ * =============================================================================
+ * Descripción: Representa un usuario del sistema con credenciales de acceso.
+ * Define roles y permisos. Los odontólogos tienen una relación especial con
+ * la tabla odontologo a través de odontologoId.
+ * =============================================================================
+ */
 public class Usuario {
     private int usuarioId;
     private int tipoId;

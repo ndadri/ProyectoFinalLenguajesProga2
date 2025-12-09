@@ -37,45 +37,68 @@
                 </h1>
                 <p class="page-subtitle">Administra tu cuenta y preferencias</p>
             </div>
+            <a href="dashboard" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
         </div>
+
+        <!-- Mensajes -->
+        <% if (request.getAttribute("mensaje") != null) { %>
+        <div class="alert alert-<%= request.getAttribute("tipoMensaje") %>" style="margin-bottom: 1.5rem;">
+            <i class="fas fa-<%= "success".equals(request.getAttribute("tipoMensaje")) ? "check-circle" : "exclamation-circle" %>"></i>
+            <%= request.getAttribute("mensaje") %>
+        </div>
+        <% } %>
 
         <!-- Información del Usuario -->
         <div class="card" style="margin-bottom: 2rem;">
             <div class="card-body">
-                <h3 style="margin-bottom: 1rem;">
-                    <i class="fas fa-user"></i> Información de la Cuenta
+                <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-user" style="color: #3B82F6;"></i>
+                    Información de la Cuenta
                 </h3>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
-                    <div>
-                        <strong>Usuario:</strong>
-                        <p><%= usuarioConfig.getUsuario() %></p>
+
+                <form action="configuracion" method="post">
+                    <input type="hidden" name="action" value="actualizar_perfil">
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <strong style="color: #6B7280; display: block; margin-bottom: 0.5rem;">Usuario</strong>
+                            <p style="font-size: 1.1rem; color: #1F2937;"><%= usuarioConfig.getUsuario() %></p>
+                        </div>
+                        <div>
+                            <strong style="color: #6B7280; display: block; margin-bottom: 0.5rem;">Tipo de Usuario</strong>
+                            <span class="badge" style="background: #DBEAFE; color: #1E40AF; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600;">
+                                <i class="fas fa-shield-alt"></i> <%= usuarioConfig.getTipoUsuarioNombre() %>
+                            </span>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="email">Email</label>
+                            <input type="email"
+                                   id="email"
+                                   name="email"
+                                   class="form-control"
+                                   value="<%= usuarioConfig.getEmail() != null ? usuarioConfig.getEmail() : "" %>"
+                                   required>
+                        </div>
                     </div>
-                    <div>
-                        <strong>Email:</strong>
-                        <p><%= usuarioConfig.getEmail() %></p>
-                    </div>
-                    <div>
-                        <strong>Tipo de Usuario:</strong>
-                        <p><%= usuarioConfig.getTipoUsuarioNombre() %></p>
-                    </div>
-                </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Actualizar Email
+                    </button>
+                </form>
             </div>
         </div>
 
         <!-- Cambiar Contraseña -->
         <div class="card">
             <div class="card-body">
-                <h3 style="margin-bottom: 1rem;">
-                    <i class="fas fa-key"></i> Cambiar Contraseña
+                <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-key" style="color: #EF4444;"></i>
+                    Cambiar Contraseña
                 </h3>
 
-                <% if (request.getAttribute("mensaje") != null) { %>
-                <div class="alert alert-<%= request.getAttribute("tipoMensaje") %>" style="margin-bottom: 1rem;">
-                    <%= request.getAttribute("mensaje") %>
-                </div>
-                <% } %>
-
-                <form action="configuracion" method="post" style="max-width: 500px;">
+                <form action="configuracion" method="post" id="formPassword" style="max-width: 600px;">
                     <input type="hidden" name="action" value="cambiar_password">
 
                     <div class="form-group">
@@ -109,7 +132,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Cambiar Contraseña
+                        <i class="fas fa-key"></i> Cambiar Contraseña
                     </button>
                 </form>
             </div>
@@ -119,7 +142,7 @@
 
 <script>
     // Validar que las contraseñas coincidan
-    document.querySelector('form').addEventListener('submit', function(e) {
+    document.getElementById('formPassword').addEventListener('submit', function(e) {
         const nueva = document.getElementById('password_nueva').value;
         const confirmar = document.getElementById('password_confirmar').value;
 

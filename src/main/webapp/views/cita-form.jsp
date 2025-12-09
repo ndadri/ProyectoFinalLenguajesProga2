@@ -18,6 +18,21 @@
     Integer odontologoPreseleccionado = (Integer) request.getAttribute("odontologoPreseleccionado");
     Boolean soloLectura = (Boolean) request.getAttribute("soloLectura");
 %>
+<!-- Vista: cita-form.jsp
+Propósito: Formulario para crear o editar una cita.
+Variables/atributos esperados en request:
+- cita (models.Cita) (opcional) -> si existe, la vista actúa en modo edición.
+- pacientes (List<models.Paciente>) para el select de paciente.
+- odontologos (List<models.Odontologo>) para el select de odontólogo.
+Comportamiento/validaciones importantes:
+- Fecha mínima: hoy (min attribute en input date).
+- Rango horario permitido: 08:00 - 18:00 (validación JS en submit).
+- Action del form: 'cita' con parámetros action (guardar/actualizar).
+Secciones principales:
+1) Encabezado y carga de listas (pacientes, odontólogos).
+2) Campos de la cita (fecha, hora, duración, tipo, estado, consultorio, motivo, observaciones).
+3) Validación JS para horario de atención.
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

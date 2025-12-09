@@ -3,6 +3,47 @@ package models;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+/**
+ * =============================================================================
+ * MODELO: Factura.java
+ * =============================================================================
+ * Descripción: Representa una factura de servicios odontológicos con cálculos
+ * automáticos de IVA, totales y seguimiento de pagos. Incluye múltiples
+ * métodos para formateo monetario y gestión de estados.
+ * =============================================================================
+ */
+// ATRIBUTOS PRINCIPALES:
+// - factura_id: Identificador único
+// - paciente_id: Referencia al paciente
+// - consulta_id: Referencia opcional a consulta
+// - numero_factura: Número único generado (ej: FAC-20240101-0001)
+// - fecha_emision: LocalDateTime de emisión
+
+// VALORES MONETARIOS (BigDecimal):
+// - subtotal: Suma de detalles antes de descuento
+// - descuento: Descuento aplicado
+// - iva: Calculado automáticamente (15% de baseImponible)
+// - total: Total final a pagar
+// - total_pagado: Suma de pagos realizados (calculado desde historial_pagos)
+
+// ESTADOS POSIBLES:
+// - "Pendiente": No hay pagos (total_pagado = 0)
+// - "Parcial": Hay pagos pero no cubren el total (0 < total_pagado < total)
+// - "Pagada": Total pagado >= total
+// - "Cancelada": Factura anulada
+
+// MÉTODOS DE CÁLCULO:
+// - calcularTotales(): Calcula IVA y total
+//   Formula: baseImponible = subtotal - descuento
+//           iva = baseImponible * 0.15
+//           total = baseImponible + iva
+// - getSaldoPendiente(): Retorna total - total_pagado
+
+// MÉTODOS DE FORMATEO:
+// - Todos los valores monetarios tienen versión formateada con $
+// - getFechaFormateada(): dd/MM/yyyy
+// - getFechaHoraFormateada(): dd/MM/yyyy HH:mm
+// - getEstadoColor(): Retorna color CSS para badges
 
 public class Factura {
 

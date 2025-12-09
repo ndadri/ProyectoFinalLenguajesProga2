@@ -6,7 +6,14 @@ import utils.ConexionBdd;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * =============================================================================
+ * ARCHIVO: TratamientoDAO.java
+ * =============================================================================
+ * Descripción: Catálogo de tratamientos odontológicos con códigos, precios
+ * base, duración aproximada y requisitos de anestesia.
+ * =============================================================================
+ */
 public class TratamientoDAO {
 
     private Connection getConnection() throws SQLException {

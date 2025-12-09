@@ -8,6 +8,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.Odontologo" %>
 <%@ page import="java.util.List" %>
+<!-- Vista: odontologo.jsp
+Propósito: Listado y gestión de odontólogos (crear, editar, eliminar).
+Variables/atributos esperados:
+- odontologos (List<models.Odontologo>)
+- mensaje, tipoMensaje en session (opcional)
+Secciones principales:
+1) Cabecera y botón de crear.
+2) Mensajes de notificación.
+3) Tabla de odontólogos con acciones.
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

@@ -7,6 +7,15 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<!-- Vista: tratamiento-form.jsp
+Propósito: Formulario para crear o editar un tratamiento odontológico.
+Variables/atributos esperados:
+- tratamiento (opcional): objeto para modo edición
+Secciones:
+- Campos: código, nombre, categoría, duración, costo, descripción, estado.
+Notas:
+- Envía POST a 'tratamiento' para guardar/actualizar.
+-->
 <!DOCTYPE html>
 <html>
 <head>

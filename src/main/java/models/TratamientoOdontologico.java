@@ -1,7 +1,14 @@
 package models;
 
 import java.math.BigDecimal;
-
+/**
+ * =============================================================================
+ * MODELO: TratamientoOdontologico.java
+ * =============================================================================
+ * Descripción: Representa un tratamiento del catálogo de servicios
+ * odontológicos. Define precios base, duración y requisitos.
+ * =============================================================================
+ */
 public class TratamientoOdontologico {
 
     private int tratamiento_id;      // auto increment

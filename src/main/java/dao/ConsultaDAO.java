@@ -8,7 +8,13 @@ import utils.ConexionBdd;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * ConsultaDAO - Data Access Object para la gestión de consultas médicas
+ *
+ * Descripción: Maneja todas las operaciones de base de datos relacionadas con
+ * consultas odontológicas. Permite registrar y consultar el historial médico
+ * completo de cada paciente incluyendo diagnósticos, tratamientos y seguimientos.
+ */
 public class ConsultaDAO {
 
     // CREATE - Insertar nueva consulta

@@ -1,3 +1,10 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: adria
+  Date: 06/dic/2025
+  Time: 10:46 a. m.
+  To change this template use File | Settings | File Templates.
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.Usuario" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -9,6 +16,14 @@
         return;
     }
 %>
+<!-- Vista: dashboard.jsp
+Propósito: Página principal del panel (dashboard) que muestra estadísticas rápidas, acciones y citas recientes.
+Variables/atributos esperados:
+- totalPacientes (Integer) (opcional)
+- citasHoy (Integer) (opcional)
+- citasPendientes (Integer) (opcional)
+- citasRecientes (List<Cita>) (opcional)
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>

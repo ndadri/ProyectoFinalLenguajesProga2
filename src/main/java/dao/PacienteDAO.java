@@ -6,7 +6,14 @@ import utils.ConexionBdd;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * =============================================================================
+ * ARCHIVO: PacienteDAO.java
+ * =============================================================================
+ * Descripción: Maneja operaciones de BD para pacientes incluyendo historial
+ * médico, alergias, contactos de emergencia y cálculo automático de edad.
+ * =============================================================================
+ */
 public class PacienteDAO {
 
     // CREATE - Insertar nuevo paciente
