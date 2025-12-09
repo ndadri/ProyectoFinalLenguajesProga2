@@ -214,13 +214,14 @@ Secciones principales:
     <div class="login-right">
         <h2 class="login-form-title">Iniciar Sesión</h2>
         <p class="login-form-subtitle">Ingresa tus credenciales para acceder</p>
-
+        <!--
         <c:if test="${not empty error}">
             <div class="alert-error">
                 <i class="fas fa-exclamation-circle"></i>
                     ${error}
             </div>
         </c:if>
+    -->
 
         <form action="login" method="post">
             <div class="form-group">

@@ -72,6 +72,8 @@ Notas:
                                        id="nombres"
                                        name="nombres"
                                        value="${paciente.nombres}"
+                                       pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+"
+                                       title="Solo se permiten letras y espacios"
                                        required
                                        class="form-control">
                             </div>
@@ -82,6 +84,8 @@ Notas:
                                        id="apellidos"
                                        name="apellidos"
                                        value="${paciente.apellidos}"
+                                       pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+"
+                                       title="Solo se permiten letras y espacios"
                                        required
                                        class="form-control">
                             </div>
@@ -180,6 +184,8 @@ Notas:
                                        id="contacto_emergencia"
                                        name="contacto_emergencia"
                                        value="${paciente.contactoEmergencia}"
+                                       pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+"
+                                       title="Solo se permiten letras y espacios"
                                        class="form-control">
                             </div>
 
@@ -265,6 +271,28 @@ Notas:
 </div>
 
 <script>
+    // Bloquear números en Nombres y Apellidos (validación en tiempo real)
+    document.getElementById('nombres').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    });
+
+    document.getElementById('apellidos').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    });
+
+    // Solo números en Cédula y Teléfonos
+    document.getElementById('cedula').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    document.getElementById('telefono').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    document.getElementById('telefono_emergencia').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
     // Mostrar campo de embarazo solo si el género es Femenino
     const generoSelect = document.getElementById('genero');
     const embarazadaContainer = document.getElementById('embarazada-container');
