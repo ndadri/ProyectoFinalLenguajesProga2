@@ -26,13 +26,7 @@
 
     <filter-mapping>
         <filter-name>AuthFilter</filter-name>
-        <url-pattern>/dashboard</url-pattern>
-        <url-pattern>/paciente</url-pattern>
-        <url-pattern>/cita</url-pattern>
-        <url-pattern>/consulta</url-pattern>
-        <url-pattern>/odontologo</url-pattern>
-        <url-pattern>/tratamiento</url-pattern>
-        <url-pattern>/factura</url-pattern>
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
 
     <!-- Páginas de error -->
@@ -45,5 +39,10 @@
         <error-code>500</error-code>
         <location>/views/error/500.jsp</location>
     </error-page>
+
+    <!-- Página de inicio -->
+    <welcome-file-list>
+        <welcome-file>login</welcome-file>
+    </welcome-file-list>
 
 </web-app>

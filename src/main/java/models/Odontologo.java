@@ -19,6 +19,7 @@ public class Odontologo {
     private String genero;
     private boolean activo;
     private Timestamp fechaCreacion;
+    private Integer usuario_Id;
 
     // Campos adicionales para mostrar
     private String especialidadNombre;
@@ -177,5 +178,13 @@ public class Odontologo {
     // Método auxiliar para obtener nombre completo
     public String getNombreCompleto() {
         return "Dr(a). " + nombres + " " + apellidos;
+    }
+
+    public Integer getUsuario_Id() {
+        return usuario_Id;
+    }
+
+    public void setUsuario_Id(Integer usuario_Id) {
+        this.usuarioId = usuario_Id;
     }
 }

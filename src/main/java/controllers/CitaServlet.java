@@ -4,6 +4,8 @@ import dao.CitaDAO;
 import models.Cita;
 import models.Paciente;
 import models.Odontologo;
+import models.Usuario;
+import java.util.ArrayList;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -77,17 +79,43 @@ public class CitaServlet extends HttpServlet {
     }
 
     // Listar todas las citas
+    // Listar todas las citas
     private void listarCitas(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         try {
+            HttpSession session = request.getSession();
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
+
             String estadoFiltro = request.getParameter("estado");
             List<Cita> citas;
 
-            if (estadoFiltro != null && !estadoFiltro.isEmpty()) {
-                citas = citaDAO.obtenerPorEstado(estadoFiltro);
+            // FILTRAR SEGÚN EL ROL
+            if (usuario.tieneAccesoTotal()) {
+                // Admin y Recepción ven TODAS las citas
+                if (estadoFiltro != null && !estadoFiltro.isEmpty()) {
+                    citas = citaDAO.obtenerPorEstado(estadoFiltro);
+                } else {
+                    citas = citaDAO.obtenerTodos();
+                }
+            } else if (usuario.isOdontologo()) {
+                // Odontólogo solo ve SUS citas
+                if (estadoFiltro != null && !estadoFiltro.isEmpty()) {
+                    // Filtrar SUS citas por estado
+                    citas = citaDAO.obtenerPorOdontologo(usuario.getOdontologoId());
+                    List<Cita> citasFiltradas = new ArrayList<>();
+                    for (Cita c : citas) {
+                        if (c.getEstado().equals(estadoFiltro)) {
+                            citasFiltradas.add(c);
+                        }
+                    }
+                    citas = citasFiltradas;
+                } else {
+                    citas = citaDAO.obtenerPorOdontologo(usuario.getOdontologoId());
+                }
             } else {
-                citas = citaDAO.obtenerTodos();
+                // Rol desconocido - sin acceso
+                citas = new ArrayList<>();
             }
 
             request.setAttribute("citas", citas);
@@ -122,8 +150,17 @@ public class CitaServlet extends HttpServlet {
     private void mostrarFormularioNuevo(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        HttpSession session = request.getSession();
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
         List<Paciente> pacientes = citaDAO.obtenerPacientes();
         List<Odontologo> odontologos = citaDAO.obtenerOdontologos();
+
+        // Si es odontólogo, pre-seleccionar su ID y deshabilitar el selector
+        if (usuario.isOdontologo()) {
+            request.setAttribute("odontologoPreseleccionado", usuario.getOdontologoId());
+            request.setAttribute("soloLectura", true);
+        }
 
         request.setAttribute("pacientes", pacientes);
         request.setAttribute("odontologos", odontologos);

@@ -10,8 +10,12 @@ import java.util.List;
 
 public class OdontologoDAO {
 
+    private Connection getConnection() throws SQLException {
+        return ConexionBdd.getConnection();
+    }
+
     // CREATE - Insertar nuevo odontólogo
-    public boolean insertar(Odontologo odontologo) {
+    public boolean insertar(Odontologo odontologo) throws SQLException {
         // Verificar si ya existe la cédula
         if (existeCedula(odontologo.getCedula())) {
             throw new RuntimeException("Ya existe un odontólogo con la cédula " + odontologo.getCedula());
@@ -21,9 +25,10 @@ public class OdontologoDAO {
                 "num_registro, telefono, celular, email, direccion, fecha_nacimiento, genero) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = ConexionBdd.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
+            // usuario_id puede ser NULL o tener un valor
             if (odontologo.getUsuarioId() != null) {
                 ps.setInt(1, odontologo.getUsuarioId());
             } else {
@@ -46,7 +51,7 @@ public class OdontologoDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Error al insertar odontólogo: " + e.getMessage(), e);
+            throw e;
         }
     }
 
@@ -60,14 +65,9 @@ public class OdontologoDAO {
                 "WHERE o.activo = 1 " +
                 "ORDER BY o.apellidos, o.nombres";
 
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            conn = ConexionBdd.getConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(sql);
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 odontologos.add(mapearOdontologo(rs));
@@ -75,14 +75,6 @@ public class OdontologoDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
 
         return odontologos;
@@ -96,7 +88,7 @@ public class OdontologoDAO {
                 "LEFT JOIN usuario u ON o.usuario_id = u.usuario_id " +
                 "WHERE o.odontologo_id = ?";
 
-        try (Connection conn = ConexionBdd.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -120,7 +112,7 @@ public class OdontologoDAO {
                 "direccion = ?, fecha_nacimiento = ?, genero = ? " +
                 "WHERE odontologo_id = ?";
 
-        try (Connection conn = ConexionBdd.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, odontologo.getEspecialidadId());
@@ -148,7 +140,7 @@ public class OdontologoDAO {
     public boolean eliminar(int id) {
         String sql = "UPDATE odontologo SET activo = 0 WHERE odontologo_id = ?";
 
-        try (Connection conn = ConexionBdd.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -162,9 +154,9 @@ public class OdontologoDAO {
 
     // Verificar si existe una cédula
     public boolean existeCedula(String cedula) {
-        String sql = "SELECT COUNT(*) FROM odontologo WHERE cedula = ?";
+        String sql = "SELECT COUNT(*) FROM odontologo WHERE cedula = ? AND activo = 1";
 
-        try (Connection conn = ConexionBdd.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, cedula);
@@ -186,7 +178,7 @@ public class OdontologoDAO {
         List<Especialidad> especialidades = new ArrayList<>();
         String sql = "SELECT * FROM especialidad WHERE activo = 1 ORDER BY nombre";
 
-        try (Connection conn = ConexionBdd.getConnection();
+        try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -206,11 +198,11 @@ public class OdontologoDAO {
         return especialidades;
     }
 
-    // Contar odontólogos
+    // Contar odontólogos activos
     public int contarOdontologos() {
         String sql = "SELECT COUNT(*) FROM odontologo WHERE activo = 1";
 
-        try (Connection conn = ConexionBdd.getConnection();
+        try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -230,9 +222,10 @@ public class OdontologoDAO {
         Odontologo o = new Odontologo();
         o.setOdontologoId(rs.getInt("odontologo_id"));
 
-        int usuarioId = rs.getInt("usuario_id");
+        // Manejar usuario_id que puede ser NULL
+        int usuario_Id = rs.getInt("usuario_id");
         if (!rs.wasNull()) {
-            o.setUsuarioId(usuarioId);
+            o.setUsuarioId(usuario_Id);
         }
 
         o.setEspecialidadId(rs.getInt("especialidad_id"));
@@ -249,7 +242,7 @@ public class OdontologoDAO {
         o.setActivo(rs.getBoolean("activo"));
         o.setFechaCreacion(rs.getTimestamp("fecha_creacion"));
 
-        // Campos adicionales
+        // Campos adicionales (JOIN)
         o.setEspecialidadNombre(rs.getString("especialidad_nombre"));
         o.setNombreUsuario(rs.getString("nombre_usuario"));
 

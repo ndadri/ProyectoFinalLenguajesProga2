@@ -4,6 +4,7 @@ import dao.OdontogramaDAO;
 import models.Diente;
 import models.Odontograma;
 import models.Paciente;
+import models.Usuario;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/odontograma")
@@ -86,15 +88,26 @@ public class OdontogramaServlet extends HttpServlet {
     private void listarOdontogramas(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
 
+        HttpSession session = request.getSession();
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
         String pacienteIdParam = request.getParameter("paciente_id");
         List<Odontograma> odontogramas;
 
-        if (pacienteIdParam != null && !pacienteIdParam.isEmpty()) {
-            int pacienteId = Integer.parseInt(pacienteIdParam);
-            odontogramas = odontogramaDAO.obtenerPorPaciente(pacienteId);
-            request.setAttribute("pacienteIdFiltro", pacienteId);
+        if (usuario.tieneAccesoTotal()) {
+            // Admin y Recepción ven TODO
+            if (pacienteIdParam != null && !pacienteIdParam.isEmpty()) {
+                int pacienteId = Integer.parseInt(pacienteIdParam);
+                odontogramas = odontogramaDAO.obtenerPorPaciente(pacienteId);
+                request.setAttribute("pacienteIdFiltro", pacienteId);
+            } else {
+                odontogramas = odontogramaDAO.obtenerTodos();
+            }
+        } else if (usuario.isOdontologo()) {
+            // Odontólogo solo ve odontogramas de SUS pacientes (los que tienen citas con él)
+            odontogramas = odontogramaDAO.obtenerPorOdontologo(usuario.getOdontologoId());
         } else {
-            odontogramas = odontogramaDAO.obtenerTodos();
+            odontogramas = new ArrayList<>();
         }
 
         List<Paciente> pacientes = odontogramaDAO.obtenerPacientes();

@@ -3,6 +3,8 @@ package controllers;
 import dao.OdontologoDAO;
 import models.Odontologo;
 import models.Especialidad;
+import dao.UsuarioDAO;
+import models.Usuario;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,10 +16,12 @@ import java.util.List;
 @WebServlet("/odontologo")
 public class OdontologoServlet extends HttpServlet {
     private OdontologoDAO odontologoDAO;
+    private UsuarioDAO usuarioDAO;
 
     @Override
     public void init() throws ServletException {
         odontologoDAO = new OdontologoDAO();
+        usuarioDAO = new UsuarioDAO();
     }
 
     @Override
@@ -105,38 +109,90 @@ public class OdontologoServlet extends HttpServlet {
         }
     }
 
-    // Guardar nuevo odontólogo
+    // Guardar nuevo odontólogo CON CREDENCIALES
     private void guardarOdontologo(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
 
         try {
+            // 1. PRIMERO CREAR EL USUARIO
+            String usuario = request.getParameter("usuario");
+            String password = request.getParameter("password");
+            String email = request.getParameter("email");
+
+            // Validar que el usuario no exista
+            if (usuarioDAO.existeUsuario(usuario)) {
+                session.setAttribute("mensaje", "El nombre de usuario '" + usuario + "' ya existe. Por favor, elige otro.");
+                session.setAttribute("tipoMensaje", "error");
+                response.sendRedirect("odontologo?action=nuevo");
+                return;
+            }
+
+            // Crear usuario con tipo_id = 2 (Odontólogo)
+            Usuario nuevoUsuario = new Usuario();
+            nuevoUsuario.setTipoId(2); // Tipo Odontólogo
+            nuevoUsuario.setUsuario(usuario);
+            nuevoUsuario.setPassword(password);
+            nuevoUsuario.setEmail(email);
+            nuevoUsuario.setActivo(true);
+
+            System.out.println("[DEBUG] Creando usuario: " + usuario);
+            boolean usuarioCreado = usuarioDAO.crear(nuevoUsuario);
+
+            if (!usuarioCreado) {
+                session.setAttribute("mensaje", "Error al crear las credenciales de acceso");
+                session.setAttribute("tipoMensaje", "error");
+                response.sendRedirect("odontologo?action=nuevo");
+                return;
+            }
+
+            // Obtener el ID del usuario recién creado
+            Usuario usuarioCreado2 = usuarioDAO.obtenerPorNombre(usuario);
+            if (usuarioCreado2 == null) {
+                session.setAttribute("mensaje", "Error: No se pudo obtener el usuario creado");
+                session.setAttribute("tipoMensaje", "error");
+                response.sendRedirect("odontologo?action=nuevo");
+                return;
+            }
+
+            int usuarioId = usuarioCreado2.getUsuarioId();
+            System.out.println("[DEBUG] Usuario creado con ID: " + usuarioId);
+
+            // 2. LUEGO CREAR EL ODONTÓLOGO CON EL USUARIO_ID
             Odontologo odontologo = extraerDatosFormulario(request);
+            odontologo.setUsuarioId(usuarioId); // IMPORTANTE: Asignar el usuario_id
 
-            boolean exito = odontologoDAO.insertar(odontologo);
+            System.out.println("[DEBUG] Creando odontólogo con usuario_id: " + usuarioId);
+            boolean odontologoCreado = odontologoDAO.insertar(odontologo);
 
-            if (exito) {
-                request.getSession().setAttribute("mensaje", "Odontólogo registrado exitosamente");
-                request.getSession().setAttribute("tipoMensaje", "success");
+            if (odontologoCreado) {
+                session.setAttribute("mensaje", "Odontólogo creado exitosamente. Credenciales: Usuario='" + usuario + "'");
+                session.setAttribute("tipoMensaje", "success");
+                response.sendRedirect("odontologo?action=listar");
             } else {
-                request.getSession().setAttribute("mensaje", "Error al registrar odontólogo");
-                request.getSession().setAttribute("tipoMensaje", "error");
+                // Si falla, eliminar el usuario creado
+                System.err.println("[ERROR] Fallo al crear odontólogo, eliminando usuario...");
+                usuarioDAO.eliminar(usuarioId);
+                session.setAttribute("mensaje", "Error al crear el odontólogo");
+                session.setAttribute("tipoMensaje", "error");
+                response.sendRedirect("odontologo?action=nuevo");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+            System.err.println("[ERROR] Excepción al guardar odontólogo: " + e.getMessage());
 
             String mensajeError = e.getMessage();
 
             if (mensajeError != null && mensajeError.contains("Duplicate entry") && mensajeError.contains("cedula")) {
-                request.getSession().setAttribute("mensaje", "Ya existe un odontólogo con esta cédula");
-                request.getSession().setAttribute("tipoMensaje", "error");
+                session.setAttribute("mensaje", "Ya existe un odontólogo con esta cédula");
+                session.setAttribute("tipoMensaje", "error");
             } else {
-                request.getSession().setAttribute("mensaje", "Error: " + mensajeError);
-                request.getSession().setAttribute("tipoMensaje", "error");
+                session.setAttribute("mensaje", "Error: " + mensajeError);
+                session.setAttribute("tipoMensaje", "error");
             }
+            response.sendRedirect("odontologo?action=nuevo");
         }
-
-        response.sendRedirect("odontologo?action=listar");
     }
 
     // Actualizar odontólogo existente
@@ -203,7 +259,13 @@ public class OdontologoServlet extends HttpServlet {
         odontologo.setNumRegistro(request.getParameter("num_registro"));
         odontologo.setTelefono(request.getParameter("telefono"));
         odontologo.setCelular(request.getParameter("celular"));
-        odontologo.setEmail(request.getParameter("email"));
+
+        // Email solo si es edición (en creación viene del formulario de credenciales)
+        String emailParam = request.getParameter("email_contacto");
+        if (emailParam != null && !emailParam.isEmpty()) {
+            odontologo.setEmail(emailParam);
+        }
+
         odontologo.setDireccion(request.getParameter("direccion"));
 
         String fechaNacStr = request.getParameter("fecha_nacimiento");

@@ -370,4 +370,64 @@ public class CitaDAO {
         c.setPacienteCedula(rs.getString("paciente_cedula"));
         return c;
     }
+    //Obtener por odontologo
+    public List<Cita> obtenerPorOdontologo(int odontologoId) {
+        List<Cita> citas = new ArrayList<>();
+        String sql = "SELECT c.*, " +
+                "CONCAT(p.nombres, ' ', p.apellidos) as paciente_nombre, " +
+                "p.telefono as paciente_telefono, " +
+                "p.cedula as paciente_cedula, " +
+                "CONCAT(o.nombres, ' ', o.apellidos) as odontologo_nombre " +
+                "FROM cita c " +
+                "INNER JOIN paciente p ON c.paciente_id = p.paciente_id " +
+                "INNER JOIN odontologo o ON c.odontologo_id = o.odontologo_id " +
+                "WHERE c.odontologo_id = ? " +
+                "ORDER BY c.fecha_hora DESC";
+
+        try (Connection conn = ConexionBdd.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, odontologoId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                citas.add(mapearCita(rs));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return citas;
+    }
+
+    public List<Cita> obtenerPendientesPorOdontologo(int odontologoId) {
+        List<Cita> citas = new ArrayList<>();
+        String sql = "SELECT c.*, " +
+                "CONCAT(p.nombres, ' ', p.apellidos) as paciente_nombre, " +
+                "p.telefono as paciente_telefono, " +
+                "p.cedula as paciente_cedula, " +
+                "CONCAT(o.nombres, ' ', o.apellidos) as odontologo_nombre " +
+                "FROM cita c " +
+                "INNER JOIN paciente p ON c.paciente_id = p.paciente_id " +
+                "INNER JOIN odontologo o ON c.odontologo_id = o.odontologo_id " +
+                "WHERE c.odontologo_id = ? AND c.estado IN ('Programada', 'Confirmada') " +
+                "ORDER BY c.fecha_hora ASC";
+
+        try (Connection conn = ConexionBdd.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, odontologoId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                citas.add(mapearCita(rs));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return citas;
+    }
 }

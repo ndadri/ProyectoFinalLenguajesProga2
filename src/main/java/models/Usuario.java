@@ -11,6 +11,8 @@ public class Usuario {
     private boolean activo;
     private Timestamp ultimoAcceso;
     private Timestamp fechaCreacion;
+    private Integer odontologoId; // Solo si es odontólogo
+    private String tipoNombre; // Alias para compatibilidad
 
     // Campos adicionales para mostrar
     private String tipoUsuarioNombre;
@@ -97,5 +99,42 @@ public class Usuario {
 
     public void setTipoUsuarioNombre(String tipoUsuarioNombre) {
         this.tipoUsuarioNombre = tipoUsuarioNombre;
+    }
+
+    public Integer getOdontologoId() {
+        return odontologoId;
+    }
+
+    public void setOdontologoId(Integer odontologoId) {
+        this.odontologoId = odontologoId;
+    }
+
+    public String getTipoNombre() {
+        return tipoUsuarioNombre; // Usa el campo existente
+    }
+
+    public void setTipoNombre(String tipoNombre) {
+        this.tipoUsuarioNombre = tipoNombre;
+    }
+
+    // Agregar estos métodos de validación de roles:
+    public boolean isAdmin() {
+        return tipoId == 1;
+    }
+
+    public boolean isOdontologo() {
+        return tipoId == 2;
+    }
+
+    public boolean isRecepcion() {
+        return tipoId == 4;
+    }
+
+    public boolean tieneAccesoTotal() {
+        return isAdmin() || isRecepcion();
+    }
+
+    public boolean puedeVerTodo() {
+        return tieneAccesoTotal();
     }
 }

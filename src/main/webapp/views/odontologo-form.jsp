@@ -9,6 +9,8 @@
 <%@ page import="models.Odontologo" %>
 <%@ page import="models.Especialidad" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -29,16 +31,23 @@
             Odontologo odontologo = (Odontologo) request.getAttribute("odontologo");
             @SuppressWarnings("unchecked")
             List<Especialidad> especialidades = (List<Especialidad>) request.getAttribute("especialidades");
+
+            boolean esEdicion = (odontologo != null);
+            String fechaNacDefault = "";
+
+            if (esEdicion && odontologo.getFechaNacimiento() != null) {
+                fechaNacDefault = odontologo.getFechaNacimiento().toString();
+            }
         %>
 
         <div class="page-header">
             <div>
                 <h1 class="page-title">
                     <i class="fas fa-user-md"></i>
-                    <%= odontologo != null ? "Editar Odontólogo" : "Nuevo Odontólogo" %>
+                    <%= esEdicion ? "Editar Odontólogo" : "Nuevo Odontólogo" %>
                 </h1>
                 <p class="page-subtitle">
-                    <%= odontologo != null ? "Modifica la información del odontólogo" : "Completa los datos del nuevo odontólogo" %>
+                    <%= esEdicion ? "Modifica los datos del odontólogo" : "Completa la información del nuevo odontólogo" %>
                 </p>
             </div>
             <a href="odontologo?action=listar" class="btn btn-outline">
@@ -49,8 +58,8 @@
         <div class="card">
             <div class="card-body">
                 <form action="odontologo" method="post" id="odontologoForm">
-                    <input type="hidden" name="action" value="<%= odontologo != null ? "actualizar" : "guardar" %>">
-                    <% if (odontologo != null) { %>
+                    <input type="hidden" name="action" value="<%= esEdicion ? "actualizar" : "guardar" %>">
+                    <% if (esEdicion) { %>
                     <input type="hidden" name="odontologo_id" value="<%= odontologo.getOdontologoId() %>">
                     <% } %>
 
@@ -66,9 +75,10 @@
                                 <input type="text"
                                        id="nombres"
                                        name="nombres"
-                                       value="<%= odontologo != null ? odontologo.getNombres() : "" %>"
+                                       value="<%= esEdicion ? odontologo.getNombres() : "" %>"
                                        required
-                                       class="form-control">
+                                       class="form-control"
+                                       placeholder="Juan Carlos">
                             </div>
 
                             <div class="form-group">
@@ -76,9 +86,10 @@
                                 <input type="text"
                                        id="apellidos"
                                        name="apellidos"
-                                       value="<%= odontologo != null ? odontologo.getApellidos() : "" %>"
+                                       value="<%= esEdicion ? odontologo.getApellidos() : "" %>"
                                        required
-                                       class="form-control">
+                                       class="form-control"
+                                       placeholder="García Pérez">
                             </div>
 
                             <div class="form-group">
@@ -86,20 +97,23 @@
                                 <input type="text"
                                        id="cedula"
                                        name="cedula"
-                                       value="<%= odontologo != null ? odontologo.getCedula() : "" %>"
+                                       value="<%= esEdicion ? odontologo.getCedula() : "" %>"
                                        required
-                                       maxlength="10"
                                        pattern="[0-9]{10}"
                                        class="form-control"
-                                       placeholder="1234567890">
+                                       placeholder="1234567890"
+                                       maxlength="10">
+                                <small class="form-text">10 dígitos</small>
                             </div>
 
                             <div class="form-group">
-                                <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+                                <label for="fecha_nacimiento">Fecha de Nacimiento *</label>
                                 <input type="date"
                                        id="fecha_nacimiento"
                                        name="fecha_nacimiento"
-                                       value="<%= odontologo != null && odontologo.getFechaNacimiento() != null ? odontologo.getFechaNacimiento() : "" %>"
+                                       value="<%= fechaNacDefault %>"
+                                       required
+                                       max="<%= LocalDate.now().minusYears(18).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) %>"
                                        class="form-control">
                             </div>
 
@@ -107,9 +121,9 @@
                                 <label for="genero">Género *</label>
                                 <select id="genero" name="genero" required class="form-control">
                                     <option value="">Seleccione...</option>
-                                    <option value="M" <%= odontologo != null && "M".equals(odontologo.getGenero()) ? "selected" : "" %>>Masculino</option>
-                                    <option value="F" <%= odontologo != null && "F".equals(odontologo.getGenero()) ? "selected" : "" %>>Femenino</option>
-                                    <option value="Otro" <%= odontologo != null && "Otro".equals(odontologo.getGenero()) ? "selected" : "" %>>Otro</option>
+                                    <option value="M" <%= esEdicion && "M".equals(odontologo.getGenero()) ? "selected" : "" %>>Masculino</option>
+                                    <option value="F" <%= esEdicion && "F".equals(odontologo.getGenero()) ? "selected" : "" %>>Femenino</option>
+                                    <option value="Otro" <%= esEdicion && "Otro".equals(odontologo.getGenero()) ? "selected" : "" %>>Otro</option>
                                 </select>
                             </div>
                         </div>
@@ -131,7 +145,7 @@
                                             for (Especialidad e : especialidades) {
                                     %>
                                     <option value="<%= e.getEspecialidadId() %>"
-                                            <%= odontologo != null && odontologo.getEspecialidadId() == e.getEspecialidadId() ? "selected" : "" %>>
+                                            <%= esEdicion && odontologo.getEspecialidadId() == e.getEspecialidadId() ? "selected" : "" %>>
                                         <%= e.getNombre() %>
                                     </option>
                                     <%
@@ -146,28 +160,80 @@
                                 <input type="text"
                                        id="num_registro"
                                        name="num_registro"
-                                       value="<%= odontologo != null && odontologo.getNumRegistro() != null ? odontologo.getNumRegistro() : "" %>"
+                                       value="<%= esEdicion && odontologo.getNumRegistro() != null ? odontologo.getNumRegistro() : "" %>"
                                        class="form-control"
                                        placeholder="REG-001">
                             </div>
                         </div>
                     </div>
 
+                    <!-- Credenciales de Acceso - SOLO AL CREAR -->
+                    <% if (!esEdicion) { %>
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="fas fa-user-lock"></i> Credenciales de Acceso
+                        </h3>
+                        <p class="form-help-text" style="color: #6B7280; margin-bottom: 1rem;">
+                            <i class="fas fa-info-circle"></i>
+                            Estas credenciales se usarán para que el odontólogo acceda al sistema
+                        </p>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="usuario">Usuario *</label>
+                                <input type="text"
+                                       id="usuario"
+                                       name="usuario"
+                                       class="form-control"
+                                       placeholder="ej: dr.garcia"
+                                       required
+                                       pattern="[a-zA-Z0-9._-]+"
+                                       title="Solo letras, números, puntos, guiones y guiones bajos">
+                                <small class="form-text">Sin espacios ni caracteres especiales</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password">Contraseña *</label>
+                                <input type="password"
+                                       id="password"
+                                       name="password"
+                                       class="form-control"
+                                       placeholder="Mínimo 6 caracteres"
+                                       required
+                                       minlength="6">
+                                <small class="form-text">Mínimo 6 caracteres</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email"
+                                       id="email"
+                                       name="email"
+                                       class="form-control"
+                                       placeholder="correo@ejemplo.com"
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+
                     <!-- Información de Contacto -->
                     <div class="form-section">
                         <h3 class="form-section-title">
-                            <i class="fas fa-address-book"></i> Información de Contacto
+                            <i class="fas fa-phone"></i> Información de Contacto
                         </h3>
 
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="telefono">Teléfono Fijo</label>
+                                <label for="telefono">Teléfono</label>
                                 <input type="tel"
                                        id="telefono"
                                        name="telefono"
-                                       value="<%= odontologo != null && odontologo.getTelefono() != null ? odontologo.getTelefono() : "" %>"
+                                       value="<%= esEdicion && odontologo.getTelefono() != null ? odontologo.getTelefono() : "" %>"
                                        class="form-control"
-                                       placeholder="042345678">
+                                       placeholder="02-234-5678"
+                                       pattern="[0-9-]+"
+                                       maxlength="20">
                             </div>
 
                             <div class="form-group">
@@ -175,27 +241,32 @@
                                 <input type="tel"
                                        id="celular"
                                        name="celular"
-                                       value="<%= odontologo != null && odontologo.getCelular() != null ? odontologo.getCelular() : "" %>"
+                                       value="<%= esEdicion && odontologo.getCelular() != null ? odontologo.getCelular() : "" %>"
                                        class="form-control"
-                                       placeholder="0987654321">
+                                       placeholder="0987654321"
+                                       pattern="[0-9]+"
+                                       maxlength="20">
                             </div>
 
+                            <% if (esEdicion) { %>
                             <div class="form-group">
-                                <label for="email">Email</label>
+                                <label for="email_contacto">Email</label>
                                 <input type="email"
-                                       id="email"
+                                       id="email_contacto"
                                        name="email"
-                                       value="<%= odontologo != null && odontologo.getEmail() != null ? odontologo.getEmail() : "" %>"
+                                       value="<%= odontologo.getEmail() != null ? odontologo.getEmail() : "" %>"
                                        class="form-control"
-                                       placeholder="doctor@dentalcare.com">
+                                       placeholder="correo@ejemplo.com">
                             </div>
+                            <% } %>
 
                             <div class="form-group full-width">
                                 <label for="direccion">Dirección</label>
                                 <textarea id="direccion"
                                           name="direccion"
                                           rows="2"
-                                          class="form-control"><%= odontologo != null && odontologo.getDireccion() != null ? odontologo.getDireccion() : "" %></textarea>
+                                          class="form-control"
+                                          placeholder="Dirección completa..."><%= esEdicion && odontologo.getDireccion() != null ? odontologo.getDireccion() : "" %></textarea>
                             </div>
                         </div>
                     </div>
@@ -204,7 +275,7 @@
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save"></i>
-                            <%= odontologo != null ? "Actualizar" : "Guardar" %> Odontólogo
+                            <%= esEdicion ? "Actualizar" : "Guardar" %> Odontólogo
                         </button>
                         <a href="odontologo?action=listar" class="btn btn-outline">
                             <i class="fas fa-times"></i> Cancelar
@@ -217,12 +288,13 @@
 </div>
 
 <script>
-    // Validación de cédula
+    // Validación de cédula ecuatoriana
     document.getElementById('odontologoForm').addEventListener('submit', function(e) {
         const cedula = document.getElementById('cedula').value;
-        if (cedula.length !== 10 || !/^\d+$/.test(cedula)) {
+
+        if (cedula.length !== 10) {
             e.preventDefault();
-            alert('La cédula debe contener exactamente 10 dígitos numéricos');
+            alert('La cédula debe tener exactamente 10 dígitos');
             return false;
         }
     });

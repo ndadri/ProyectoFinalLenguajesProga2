@@ -6,7 +6,11 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="models.Usuario" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%
+    Usuario usuarioTratamiento = (Usuario) session.getAttribute("usuario");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,9 +29,15 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="fas fa-tooth"></i> Gestión de Tratamientos</h2>
+        <% if (usuarioTratamiento.tieneAccesoTotal()) { %>
         <a href="tratamiento?action=nuevo" class="btn btn-primary">
             <i class="fas fa-plus"></i> Nuevo Tratamiento
         </a>
+        <% } else { %>
+        <span class="badge bg-secondary" style="font-size: 1rem; padding: 0.5rem 1rem;">
+            <i class="fas fa-eye"></i> Solo Lectura
+        </span>
+        <% } %>
     </div>
 
     <!-- MENSAJE DE ALERTA -->
@@ -79,6 +89,7 @@
                             </c:choose>
                         </td>
                         <td>
+                            <% if (usuarioTratamiento.tieneAccesoTotal()) { %>
                             <div class="btn-group" role="group">
                                 <a href="tratamiento?action=editar&id=${t.tratamientoId}"
                                    class="btn btn-warning btn-sm"
@@ -92,6 +103,11 @@
                                 <i class="fas fa-trash"></i>
                                 </a>
                             </div>
+                            <% } else { %>
+                            <span class="text-muted">
+                                <i class="fas fa-eye"></i> Solo lectura
+                            </span>
+                            <% } %>
                         </td>
                     </tr>
                 </c:forEach>

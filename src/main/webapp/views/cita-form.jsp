@@ -9,9 +9,15 @@
 <%@ page import="models.Cita" %>
 <%@ page import="models.Paciente" %>
 <%@ page import="models.Odontologo" %>
+<%@ page import="models.Usuario" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
+<%
+    Usuario usuarioCita = (Usuario) session.getAttribute("usuario");
+    Integer odontologoPreseleccionado = (Integer) request.getAttribute("odontologoPreseleccionado");
+    Boolean soloLectura = (Boolean) request.getAttribute("soloLectura");
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -97,14 +103,20 @@
 
                             <div class="form-group">
                                 <label for="odontologo_id">Odontólogo *</label>
-                                <select id="odontologo_id" name="odontologo_id" required class="form-control">
+                                <select id="odontologo_id" name="odontologo_id" required class="form-control"
+                                        <%= (soloLectura != null && soloLectura) ? "disabled" : "" %>>
                                     <option value="">Seleccione un odontólogo...</option>
                                     <%
                                         if (odontologos != null) {
                                             for (Odontologo o : odontologos) {
+                                                boolean selected = false;
+                                                if (cita != null) {
+                                                    selected = cita.getOdontologoId() == o.getOdontologoId();
+                                                } else if (odontologoPreseleccionado != null) {
+                                                    selected = odontologoPreseleccionado == o.getOdontologoId();
+                                                }
                                     %>
-                                    <option value="<%= o.getOdontologoId() %>"
-                                            <%= cita != null && cita.getOdontologoId() == o.getOdontologoId() ? "selected" : "" %>>
+                                    <option value="<%= o.getOdontologoId() %>" <%= selected ? "selected" : "" %>>
                                         Dr(a). <%= o.getNombres() %> <%= o.getApellidos() %> - <%= o.getEspecialidadNombre() %>
                                     </option>
                                     <%
@@ -112,6 +124,14 @@
                                         }
                                     %>
                                 </select>
+
+                                <% if (soloLectura != null && soloLectura) { %>
+                                <!-- Campo oculto para enviar el valor cuando está disabled -->
+                                <input type="hidden" name="odontologo_id" value="<%= odontologoPreseleccionado %>">
+                                <small class="form-text" style="color: #3B82F6; margin-top: 0.5rem; display: block;">
+                                    <i class="fas fa-info-circle"></i> Solo puedes agendar citas para ti mismo
+                                </small>
+                                <% } %>
                             </div>
 
                             <div class="form-group">

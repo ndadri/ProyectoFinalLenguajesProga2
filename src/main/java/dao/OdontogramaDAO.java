@@ -294,4 +294,29 @@ public class OdontogramaDAO {
         o.setPacienteCedula(rs.getString("paciente_cedula"));
         return o;
     }
+    // AGREGAR AL FINAL DE LA CLASE, ANTES DEL ÚLTIMO }
+
+    public List<Odontograma> obtenerPorOdontologo(int odontologoId) throws SQLException {
+        List<Odontograma> lista = new ArrayList<>();
+        String sql = "SELECT DISTINCT o.*, CONCAT(p.nombres, ' ', p.apellidos) as paciente_nombre, p.cedula as paciente_cedula " +
+                "FROM odontograma o " +
+                "INNER JOIN paciente p ON o.paciente_id = p.paciente_id " +
+                "INNER JOIN cita c ON c.paciente_id = p.paciente_id " +
+                "WHERE c.odontologo_id = ? " +
+                "ORDER BY o.fecha_creacion DESC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, odontologoId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Odontograma o = mapearOdontograma(rs);
+                    lista.add(o);
+                }
+            }
+        }
+        return lista;
+    }
 }
