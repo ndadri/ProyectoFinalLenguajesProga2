@@ -41,26 +41,45 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String usuario = request.getParameter("usuario");
-        String password = request.getParameter("password");
+        // Usamos trim() para quitar espacios accidentales al inicio/final
+        String usuario = request.getParameter("usuario") != null ? request.getParameter("usuario").trim() : "";
+        String password = request.getParameter("password") != null ? request.getParameter("password").trim() : "";
 
-        // Validar credenciales
-        Usuario user = usuarioDAO.validarCredenciales(usuario, password);
+        // Validar vacíos usando nuestra clase nueva (más limpio)
+        if(utils.Validador.esVacio(usuario) || utils.Validador.esVacio(password)) {
+            request.setAttribute("error", "Usuario y contraseña son requeridos");
+            request.getRequestDispatcher("/views/login.jsp").forward(request, response);
+            return;
+        }
 
-        if (user != null && user.isActivo()) {
-            // Login exitoso
-            HttpSession session = request.getSession();
-            session.setAttribute("usuario", user);
-            session.setMaxInactiveInterval(3600); // 1 hora
+        Usuario user = usuarioDAO.validarCredenciales(usuario.trim(), password.trim());
+        try{
 
-            // Actualizar último acceso
-            usuarioDAO.actualizarUltimoAcceso(user.getUsuarioId());
+            if (user != null && user.isActivo()) {
+                // Login exitoso
+                HttpSession session = request.getSession();
+                session.setAttribute("usuario", user);
+                session.setMaxInactiveInterval(3600); // 1 hora
 
-            response.sendRedirect("dashboard");
-        } else {
-            // Login fallido
-            request.setAttribute("error", "Usuario o contraseña incorrectos");
+                // Actualizar último acceso
+                usuarioDAO.actualizarUltimoAcceso(user.getUsuarioId());
+
+                response.sendRedirect("dashboard");
+            } else {
+                // Login fallido
+                request.setAttribute("error", "Usuario o contraseña incorrectos");
+                request.getRequestDispatcher("/views/login.jsp").forward(request, response);
+            }
+
+        } catch (Exception e){
+            System.err.println("Error al iniciar sesión: " + e.getMessage());
+            e.printStackTrace();
+
+            //Esto es en caso de errores random
+            request.setAttribute("error", "Error al procesar el login, intentalo más tarde");
             request.getRequestDispatcher("/views/login.jsp").forward(request, response);
         }
+
+
     }
 }

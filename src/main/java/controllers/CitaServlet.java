@@ -192,12 +192,31 @@ public class CitaServlet extends HttpServlet {
         }
     }
 
-    // Guardar nueva cita
+    // Guardar nueva cita con VALIDACIÓN DE FECHA
     private void guardarCita(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         try {
             Cita cita = extraerDatosFormulario(request);
+
+            // --- VALIDACIÓN DE FECHA ---
+            Timestamp ahora = new Timestamp(System.currentTimeMillis());
+
+            // Si la cita es antes de "ahora", error.
+            if (cita.getFechaHora().before(ahora)) {
+                request.getSession().setAttribute("mensaje", "Error: No puedes agendar citas en el pasado.");
+                request.getSession().setAttribute("tipoMensaje", "error");
+                response.sendRedirect("cita?action=nuevo");
+                return;
+            }
+
+            if (cita.getDuracionMinutos() <= 0) {
+                request.getSession().setAttribute("mensaje", "Error: La duración debe ser mayor a 0.");
+                request.getSession().setAttribute("tipoMensaje", "error");
+                response.sendRedirect("cita?action=nuevo");
+                return;
+            }
+            // ---------------------------
 
             boolean exito = citaDAO.insertar(cita);
 

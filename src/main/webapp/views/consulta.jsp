@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.Consulta" %>
+<%@ page import="models.Paciente" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <!-- Vista: consulta.jsp
@@ -32,32 +33,41 @@ Variables/atributos esperados:
 
     <div class="container">
         <%
+            // Recuperamos datos
             Boolean historialPaciente = (Boolean) request.getAttribute("historialPaciente");
+            Paciente paciente = (Paciente) request.getAttribute("paciente"); // Recuperamos al paciente
         %>
 
         <div class="page-header">
             <div>
                 <h1 class="page-title">
                     <i class="fas fa-stethoscope"></i>
-                    <%= historialPaciente != null ? "Historial Clínico" : "Consultas Médicas" %>
+                    <% if (historialPaciente != null && paciente != null) { %>
+                    Historial: <%= paciente.getNombres() %> <%= paciente.getApellidos() %>
+                    <% } else { %>
+                    Consultas Médicas
+                    <% } %>
                 </h1>
                 <p class="page-subtitle">
-                    <%= historialPaciente != null ? "Historial completo del paciente" : "Registro de consultas odontológicas" %>
+                    <%= historialPaciente != null ? "Expediente clínico detallado" : "Registro general de consultas odontológicas" %>
                 </p>
             </div>
             <div style="display: flex; gap: 0.5rem;">
                 <% if (historialPaciente != null) { %>
                 <a href="consulta?action=listar" class="btn btn-outline">
-                    <i class="fas fa-arrow-left"></i> Volver
+                    <i class="fas fa-arrow-left"></i> Volver a Lista
                 </a>
-                <% } %>
+                <a href="consulta?action=nuevo&paciente_id=<%= paciente.getPacienteId() %>" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nueva Consulta para <%= paciente.getNombres() %>
+                </a>
+                <% } else { %>
                 <a href="consulta?action=nuevo" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Nueva Consulta
                 </a>
+                <% } %>
             </div>
         </div>
 
-        <!-- Mensajes -->
         <%
             String mensaje = (String) session.getAttribute("mensaje");
             String tipoMensaje = (String) session.getAttribute("tipoMensaje");
@@ -77,7 +87,39 @@ Variables/atributos esperados:
             }
         %>
 
-        <!-- Tabla de consultas -->
+        <% if (historialPaciente != null && paciente != null) { %>
+        <div class="card" style="margin-bottom: 20px; border-left: 5px solid #2563EB;">
+            <div class="card-body">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px;">
+
+                    <div style="flex: 1; min-width: 200px;">
+                        <h3 style="margin-top: 0; color: #1F2937; font-size: 1.1rem;">Datos Personales</h3>
+                        <p style="margin: 5px 0; color: #4B5563;"><strong>Cédula:</strong> <%= paciente.getCedula() %></p>
+                        <p style="margin: 5px 0; color: #4B5563;"><strong>Edad:</strong> <%= paciente.getEdad() %> años</p>
+                        <p style="margin: 5px 0; color: #4B5563;"><strong>Género:</strong> <%= paciente.getGenero() %></p>
+                    </div>
+
+                    <div style="flex: 1; min-width: 200px;">
+                        <h3 style="margin-top: 0; color: #1F2937; font-size: 1.1rem;">Contacto</h3>
+                        <p style="margin: 5px 0; color: #4B5563;"><i class="fas fa-phone"></i> <%= paciente.getTelefono() %></p>
+                        <p style="margin: 5px 0; color: #4B5563;"><i class="fas fa-map-marker-alt"></i> <%= paciente.getDireccion() != null ? paciente.getDireccion() : "Sin dirección" %></p>
+                    </div>
+
+                    <div style="flex: 1; min-width: 250px; background-color: #FEF2F2; padding: 10px; border-radius: 8px; border: 1px solid #FECACA;">
+                        <h3 style="margin-top: 0; color: #991B1B; font-size: 1.1rem;"><i class="fas fa-exclamation-circle"></i> Alertas Médicas</h3>
+                        <p style="margin: 5px 0; color: #7F1D1D;">
+                            <strong>Alergias:</strong>
+                            <%= (paciente.getAlergias() != null && !paciente.getAlergias().isEmpty()) ? paciente.getAlergias() : "Ninguna registrada" %>
+                        </p>
+                        <p style="margin: 5px 0; color: #7F1D1D;">
+                            <strong>Enf. Sistémicas:</strong>
+                            <%= (paciente.getEnfermedadesSistemicas() != null && !paciente.getEnfermedadesSistemicas().isEmpty()) ? paciente.getEnfermedadesSistemicas() : "Ninguna" %>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
         <div class="card">
             <div class="card-body">
                 <%
@@ -90,10 +132,16 @@ Variables/atributos esperados:
                 <div class="empty-state">
                     <i class="fas fa-notes-medical"></i>
                     <h3>No hay consultas registradas</h3>
-                    <p>Comienza registrando la primera consulta</p>
+                    <p>No se encontraron registros en el historial.</p>
+                    <% if (historialPaciente != null && paciente != null) { %>
+                    <a href="consulta?action=nuevo&paciente_id=<%= paciente.getPacienteId() %>" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Crear Primera Consulta
+                    </a>
+                    <% } else { %>
                     <a href="consulta?action=nuevo" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Registrar Consulta
                     </a>
+                    <% } %>
                 </div>
                 <%
                 } else {
@@ -102,14 +150,11 @@ Variables/atributos esperados:
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Fecha</th>
-                            <th>Paciente</th>
+                            <th>Fecha</th> <% if (historialPaciente == null) { %>
+                            <th>Paciente</th> <% } %>
                             <th>Odontólogo</th>
-                            <th>Motivo</th>
-                            <th>Diagnóstico</th>
+                            <th>Motivo / Diagnóstico</th> <th>Tratamiento</th>
                             <th>Dientes</th>
-                            <th>Seguimiento</th>
                             <th>Acciones</th>
                         </tr>
                         </thead>
@@ -118,33 +163,33 @@ Variables/atributos esperados:
                             for (Consulta c : consultas) {
                         %>
                         <tr>
-                            <td><strong>#<%= c.getConsultaId() %></strong></td>
-                            <td><%= c.getFechaConsulta() != null ? sdf.format(c.getFechaConsulta()) : "-" %></td>
                             <td>
-                                <%= c.getPacienteNombre() %>
-                                <br><small style="color: #6B7280;"><%= c.getPacienteCedula() %></small>
-                            </td>
-                            <td><%= c.getOdontologoNombre() %></td>
-                            <td>
-                                <%= c.getMotivoConsulta() != null && c.getMotivoConsulta().length() > 50
-                                        ? c.getMotivoConsulta().substring(0, 50) + "..."
-                                        : c.getMotivoConsulta() %>
-                            </td>
-                            <td>
-                                <%= c.getDiagnostico() != null && c.getDiagnostico().length() > 50
-                                        ? c.getDiagnostico().substring(0, 50) + "..."
-                                        : c.getDiagnostico() %>
-                            </td>
-                            <td><%= c.getDientesTratados() != null ? c.getDientesTratados() : "-" %></td>
-                            <td>
+                                <strong><%= c.getFechaConsulta() != null ? sdf.format(c.getFechaConsulta()) : "-" %></strong>
                                 <% if (c.isRequiereSeguimiento()) { %>
-                                <span class="badge badge-warning">
-                                                        <i class="fas fa-exclamation-triangle"></i> Sí
-                                                    </span>
-                                <% } else { %>
-                                <span class="badge badge-success">No</span>
+                                <br><span class="badge badge-warning" style="font-size: 0.7rem;">Requiere Control</span>
                                 <% } %>
                             </td>
+
+                            <% if (historialPaciente == null) { %>
+                            <td>
+                                <a href="consulta?action=historial&paciente_id=<%= c.getPacienteId() %>" style="font-weight: bold; color: #2563EB; text-decoration: none;">
+                                    <%= c.getPacienteNombre() %>
+                                </a>
+                                <br><small style="color: #6B7280;"><%= c.getPacienteCedula() %></small>
+                            </td>
+                            <% } %>
+
+                            <td><%= c.getOdontologoNombre() %></td>
+
+                            <td>
+                                <span style="display:block; font-weight:500;">M: <%= c.getMotivoConsulta() %></span>
+                                <span style="display:block; color: #DC2626; font-size: 0.9em;">Dx: <%= c.getDiagnostico() %></span>
+                            </td>
+
+                            <td><%= c.getTratamiento() %></td>
+
+                            <td><%= c.getDientesTratados() != null ? c.getDientesTratados() : "-" %></td>
+
                             <td>
                                 <div class="action-buttons">
                                     <a href="consulta?action=ver&id=<%= c.getConsultaId() %>"
@@ -175,7 +220,7 @@ Variables/atributos esperados:
 
                 <div class="table-footer">
                     <p class="table-info">
-                        Mostrando <strong><%= consultas.size() %></strong> consulta(s)
+                        Mostrando <strong><%= consultas.size() %></strong> registros
                     </p>
                 </div>
                 <%

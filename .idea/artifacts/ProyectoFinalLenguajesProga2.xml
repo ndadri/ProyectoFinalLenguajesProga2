@@ -13,6 +13,7 @@
           <element id="library" level="project" name="Maven: com.itextpdf:itextpdf:5.5.13.3" />
           <element id="library" level="project" name="Maven: com.mysql:mysql-connector-j:8.0.33" />
           <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:3.21.9" />
+          <element id="library" level="project" name="Maven: org.mindrot:jbcrypt:0.4" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="ProyectoFinalLenguajesProga2/web/Web" />

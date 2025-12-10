@@ -2,6 +2,7 @@ package dao;
 
 import models.Usuario;
 import utils.ConexionBdd;
+import utils.PasswordUtils;
 
 import java.sql.*;
 /**
@@ -14,37 +15,40 @@ import java.sql.*;
  */
 public class UsuarioDAO {
 
-    // Validar credenciales SIN HASH
+    // Validar credenciales
     public Usuario validarCredenciales(String usuario, String password) {
         String sql = "SELECT u.*, t.nombre as tipo_usuario_nombre, o.odontologo_id " +
                 "FROM usuario u " +
                 "INNER JOIN tipo_usuario t ON u.tipo_id = t.tipo_id " +
                 "LEFT JOIN odontologo o ON u.usuario_id = o.usuario_id " +
-                "WHERE u.usuario = ? AND u.password = ? AND u.activo = 1";
+                "WHERE u.usuario = ? AND u.activo = 1";
 
         try (Connection conn = ConexionBdd.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, usuario);
-            ps.setString(2, password);
-
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                Usuario user = new Usuario();
-                user.setUsuarioId(rs.getInt("usuario_id"));
-                user.setUsuario(rs.getString("usuario"));
-                user.setEmail(rs.getString("email"));
-                user.setTipoId(rs.getInt("tipo_id"));
-                user.setActivo(rs.getBoolean("activo"));
-                user.setTipoUsuarioNombre(rs.getString("tipo_usuario_nombre"));
+                String hashedPassword = rs.getString("password");
 
-                int odontologoId = rs.getInt("odontologo_id");
-                if (!rs.wasNull()) {
-                    user.setOdontologoId(odontologoId);
+                // Verificar si la contraseña coincide con el hash
+                if (PasswordUtils.checkPassword(password, hashedPassword)) {
+                    Usuario user = new Usuario();
+                    user.setUsuarioId(rs.getInt("usuario_id"));
+                    user.setUsuario(rs.getString("usuario"));
+                    user.setEmail(rs.getString("email"));
+                    user.setTipoId(rs.getInt("tipo_id"));
+                    user.setActivo(rs.getBoolean("activo"));
+                    user.setTipoUsuarioNombre(rs.getString("tipo_usuario_nombre"));
+
+                    int odontologoId = rs.getInt("odontologo_id");
+                    if (!rs.wasNull()) {
+                        user.setOdontologoId(odontologoId);
+                    }
+
+                    return user;
                 }
-
-                return user;
             }
 
         } catch (SQLException e) {
@@ -60,7 +64,7 @@ public class UsuarioDAO {
         try (Connection conn = ConexionBdd.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, nuevaPassword); // SIN HASH
+            ps.setString(1, PasswordUtils.hashPassword(nuevaPassword));
             ps.setInt(2, usuarioId);
 
             return ps.executeUpdate() > 0;
@@ -110,7 +114,8 @@ public class UsuarioDAO {
 
             ps.setInt(1, usuario.getTipoId());
             ps.setString(2, usuario.getUsuario());
-            ps.setString(3, usuario.getPassword()); // SIN HASH
+            // Hashear la contraseña antes de guardarla
+            ps.setString(3, PasswordUtils.hashPassword(usuario.getPassword()));
             ps.setString(4, usuario.getEmail());
 
             return ps.executeUpdate() > 0;
@@ -121,6 +126,7 @@ public class UsuarioDAO {
         }
     }
 
+
     public int crearYObtenerID(Usuario usuario) {
         String sql = "INSERT INTO usuario (tipo_id, usuario, password, email, activo) VALUES (?, ?, ?, ?, ?)";
 
@@ -129,7 +135,8 @@ public class UsuarioDAO {
 
             ps.setInt(1, usuario.getTipoId());
             ps.setString(2, usuario.getUsuario());
-            ps.setString(3, usuario.getPassword()); // SIN HASH
+            // Hashear la contraseña antes de guardarla
+            ps.setString(3, PasswordUtils.hashPassword(usuario.getPassword()));
             ps.setString(4, usuario.getEmail());
             ps.setBoolean(5, usuario.isActivo());
 
@@ -149,6 +156,7 @@ public class UsuarioDAO {
 
         return -1;
     }
+
 
     public boolean existeUsuario(String usuario) {
         String sql = "SELECT COUNT(*) FROM usuario WHERE usuario = ?";

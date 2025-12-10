@@ -82,6 +82,13 @@ Notas:
             <span>Tratamientos</span>
         </a>
 
+        <!-- Medicamentos -->
+        <a href="${pageContext.request.contextPath}/medicamento?action=listar"
+           class="menu-item ${pageContext.request.requestURI.contains('medicamento') ? 'active' : ''}">
+            <i class="fas fa-pills"></i>
+            <span>Medicamentos</span>
+        </a>
+
         <!-- Odontogramas - TODOS (filtrado por rol) -->
         <a href="${pageContext.request.contextPath}/odontograma?action=listar"
            class="menu-item ${pageContext.request.requestURI.contains('odontograma') ? 'active' : ''}">

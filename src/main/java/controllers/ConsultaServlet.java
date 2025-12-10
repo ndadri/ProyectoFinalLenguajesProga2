@@ -4,6 +4,7 @@ import dao.ConsultaDAO;
 import models.Consulta;
 import models.Paciente;
 import models.Odontologo;
+import dao.PacienteDAO;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -92,10 +93,17 @@ public class ConsultaServlet extends HttpServlet {
 
         try {
             int pacienteId = Integer.parseInt(request.getParameter("paciente_id"));
+
+            // --- AGREGA ESTO PARA QUE SE VEA EL ENCABEZADO DEL PACIENTE ---
+            PacienteDAO pacienteDAO = new PacienteDAO();
+            Paciente paciente = pacienteDAO.obtenerPorId(pacienteId);
+            request.setAttribute("paciente", paciente);
+            // --------------------------------------------------------------
+
             List<Consulta> consultas = consultaDAO.obtenerPorPaciente(pacienteId);
 
             request.setAttribute("consultas", consultas);
-            request.setAttribute("historialPaciente", true);
+            request.setAttribute("historialPaciente", true); // Bandera para activar la vista de historial
             request.getRequestDispatcher("/views/consulta.jsp").forward(request, response);
 
         } catch (Exception e) {

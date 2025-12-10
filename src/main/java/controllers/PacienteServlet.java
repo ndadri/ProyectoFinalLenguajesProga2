@@ -6,6 +6,8 @@ import models.Paciente;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import utils.Validador;
+
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -134,13 +136,27 @@ public class PacienteServlet extends HttpServlet {
         }
     }
 
-    // Guardar nuevo paciente
+    // Guardar nuevo paciente con VALIDACIÓN
     private void guardarPaciente(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         try {
             Paciente paciente = extraerDatosFormulario(request);
 
+            // 1. VALIDACIÓN BACKEND (Nivel Pepa)
+            String errorValidacion = Validador.validarDatosPaciente(paciente);
+
+            if (errorValidacion != null) {
+                // Si hay error, no guardamos. Devolvemos el error.
+                request.getSession().setAttribute("mensaje", "Error: " + errorValidacion);
+                request.getSession().setAttribute("tipoMensaje", "error");
+                // Redirigimos al formulario nuevo para que intente otra vez
+                // (Ojo: idealmente usarías forward para no borrar los datos, pero mantendré tu estructura de redirect)
+                response.sendRedirect("paciente?action=nuevo");
+                return;
+            }
+
+            // 2. Si pasa la validación, intentamos guardar
             boolean exito = pacienteDAO.insertar(paciente);
 
             if (exito) {
@@ -153,26 +169,20 @@ public class PacienteServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-
+            // Manejo de duplicados SQL (por si acaso falle la validación lógica)
             String mensajeError = e.getMessage();
-
-            // Detectar error de cédula duplicada
-            if (mensajeError != null && mensajeError.contains("Duplicate entry") && mensajeError.contains("cedula")) {
-                request.getSession().setAttribute("mensaje", "Ya existe un paciente con esta cédula. Por favor, verifica el número de cédula.");
-                request.getSession().setAttribute("tipoMensaje", "error");
-            } else if (mensajeError != null && mensajeError.contains("Duplicate entry")) {
-                request.getSession().setAttribute("mensaje", "Este registro ya existe en el sistema.");
-                request.getSession().setAttribute("tipoMensaje", "error");
+            if (mensajeError != null && mensajeError.contains("Duplicate entry")) {
+                request.getSession().setAttribute("mensaje", "Ya existe un paciente con esa cédula.");
             } else {
-                request.getSession().setAttribute("mensaje", "Error al registrar paciente: " + mensajeError);
-                request.getSession().setAttribute("tipoMensaje", "error");
+                request.getSession().setAttribute("mensaje", "Error crítico: " + mensajeError);
             }
+            request.getSession().setAttribute("tipoMensaje", "error");
         }
 
         response.sendRedirect("paciente?action=listar");
     }
 
-    // Actualizar paciente existente
+    // Actualizar paciente con VALIDACIÓN
     private void actualizarPaciente(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -181,6 +191,18 @@ public class PacienteServlet extends HttpServlet {
             Paciente paciente = extraerDatosFormulario(request);
             paciente.setPacienteId(id);
 
+            // 1. VALIDACIÓN BACKEND
+            String errorValidacion = Validador.validarDatosPaciente(paciente);
+
+            if (errorValidacion != null) {
+                request.getSession().setAttribute("mensaje", "Error: " + errorValidacion);
+                request.getSession().setAttribute("tipoMensaje", "error");
+                // Volvemos al editar con el ID
+                response.sendRedirect("paciente?action=editar&id=" + id);
+                return;
+            }
+
+            // 2. Guardar
             boolean exito = pacienteDAO.actualizar(paciente);
 
             if (exito) {
